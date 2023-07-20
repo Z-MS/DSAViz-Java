@@ -13,6 +13,7 @@ public abstract class TextBlock {
         return rect;
     }
 
+    public Text getBlockText() { return blockText; }
     public Group getBlock() {
         return block;
     }

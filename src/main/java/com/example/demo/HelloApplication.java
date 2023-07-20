@@ -5,6 +5,7 @@ import com.example.demo.components.CodeBlock;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -40,42 +41,26 @@ public class HelloApplication extends Application {
         ArrayList <FillTransition> numBlockAnims = new ArrayList<>();
         int blockIndent = 60;
         // ------------------- MAIN AREA - SEARCH BLOCKS ------------------
-        CharBlock myBlock = new CharBlock(0, SCREENCENTER_Y - 200, 60, "P", null, 40);
-        Rectangle keyBlock = new Rectangle(0, SCREENCENTER_Y - 65, 60, 60);
-        keyBlock.setFill(Color.YELLOW);
-        keyBlock.setStroke(Color.BLACK);
-        keyBlock.setArcWidth(5);
-        keyBlock.setArcHeight(5);
 
-        Text searchKey = new Text("3");
-        searchKey.setX(keyBlock.getLayoutBounds().getCenterX() - searchKey.getLayoutBounds().getWidth() - 5);
-        searchKey.setY(keyBlock.getLayoutBounds().getCenterY() + searchKey.getLayoutBounds().getHeight());
-        System.out.print("Block Y: " + keyBlock.getLayoutBounds().getMinX() + " " + keyBlock.getLayoutBounds().getCenterY() + " Text height: " + searchKey.getLayoutBounds().getHeight());
-        searchKey.setFill(Color.BLACK);
-        searchKey.setFont(new Font("Consolas", 40));
+        CharBlock keyBlock = new CharBlock(0,SCREENCENTER_Y - 65,60,"3",null,40);
+        keyBlock.getRect().setStroke(Color.BLACK);
+        keyBlock.getRect().setArcWidth(5);
+        keyBlock.getRect().setArcHeight(5);
 
-        Text keyLabel = new Text(searchKey.getLayoutBounds().getMinX() - 10, keyBlock.getLayoutBounds().getMinY() - 10, "key");
+        Text keyLabel = new Text(keyBlock.getBlockText().getLayoutBounds().getMinX() - 10, keyBlock.getRect().getLayoutBounds().getMinY() - 10, "key");
         keyLabel.setFill(Color.BLACK);
         keyLabel.setFont(new Font("Consolas", 30));
 
-        mainArea.getChildren().add(myBlock.getBlock());
-        mainArea.getChildren().add(keyBlock);
-        mainArea.getChildren().add(searchKey);
+
+        mainArea.getChildren().add(keyBlock.getBlock());
         mainArea.getChildren().add(keyLabel);
 
         for(int c = 0; c < nums.length; c++) {
-            Rectangle rect = new Rectangle((blockIndent + 15) * c, SCREENCENTER_Y, 60, 60);
-            System.out.println(rect.getLayoutBounds().getMinX());
-            rect.setFill(Color.ORANGE);
+            CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, ""+ nums[c], null, 40);
+            Rectangle rect = charBlock.getRect();
             rect.setStroke(Color.BLACK);
             rect.setArcWidth(5);
             rect.setArcHeight(5);
-
-            Text blockText = new Text("" + nums[c]);
-            blockText.setFont(new Font("Consolas", 40));
-            blockText.setFill(Color.BLACK);
-            blockText.setX(rect.getLayoutBounds().getCenterX() - blockText.getLayoutBounds().getCenterX());
-            blockText.setY(rect.getLayoutBounds().getCenterY() + 10);
 
             Text indexText = new Text("" + c);
             indexText.setFont(new Font("Consolas", 30));
@@ -85,8 +70,9 @@ public class HelloApplication extends Application {
 
             numBlocks[c] = rect;
 
-            mainArea.getChildren().add(rect);
-            mainArea.getChildren().add(blockText);
+//            mainArea.getChildren().add(rect);
+//            mainArea.getChildren().add(blockText);
+            mainArea.getChildren().add(charBlock.getBlock());
             mainArea.getChildren().add(indexText);
         }
         // ------------------- END OF MAIN AREA - SEARCH BLOCKS
@@ -162,15 +148,25 @@ public class HelloApplication extends Application {
                     FillTransition keyCompAnim = createHighlighter(keyComp.getRect(), Color.INDIGO, Color.BLACK);
                     codeAnim.add(keyCompAnim);
 
-                    FillTransition numBlockAnim = createHighlighter(numBlocks[i], Color.ORANGE, Color.BLACK);
+                    FillTransition numBlockAnim = createHighlighter(numBlocks[i], Color.ORANGE, Color.RED);
                     numBlockAnims.add(numBlockAnim);
 
+                    FillTransition keyFillAnim = createHighlighter(keyBlock.getRect(), Color.ORANGE, Color.RED);
+
                     counterCompAnim.setOnFinished(e -> {
+                        keyFillAnim.play();
                         keyCompAnim.play();
                         numBlockAnim.play();
                     });
 
                     if(arr[i] == key) {
+//                        keyFillAnim.setFromValue(Color.LAWNGREEN);
+                        keyFillAnim.setToValue(Color.LAWNGREEN);
+                        keyFillAnim.setCycleCount(1);
+
+                        numBlockAnim.setToValue(Color.LAWNGREEN);
+                        numBlockAnim.setCycleCount(1);
+
                         codeAnim.add(createHighlighter(matchFound.getRect(), Color.INDIGO, Color.BLACK));
                         codeAnim.add(createHighlighter(breakText.getRect(), Color.INDIGO, Color.BLACK));
                         index = i;
@@ -178,13 +174,14 @@ public class HelloApplication extends Application {
                     }
                     // if it reaches here, it means it didn't find a match
 
-                    TranslateTransition translateTransition = new TranslateTransition(Duration.millis(500), keyBlock);
-                    translateTransition.setFromX(keyBlock.getX());
-                    translateTransition.setToX(numBlocks[i+1].getX());
-                    translateTransition.setCycleCount(1);
 
-                    numBlockAnim.setOnFinished(e -> translateTransition.play());
+                    TranslateTransition moveKeyBlock = translateX(keyBlock.getBlock(), numBlocks[i].getX(), numBlocks[i+1].getX(), 500);
+                    TranslateTransition moveLabel = translateX(keyLabel, numBlocks[i].getX(), numBlocks[i + 1].getX(), 500);
 
+                    numBlockAnim.setOnFinished(e -> {
+                        moveKeyBlock.play();
+                        moveLabel.play();
+                    });
                     codeAnim.add(createHighlighter(increment.getRect(), Color.INDIGO, Color.BLACK));
                     counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
                     codeAnim.add(counterCompAnim);
@@ -225,6 +222,24 @@ public class HelloApplication extends Application {
         ScaleTransition st = new ScaleTransition(Duration.millis(duration), block);
         st.fromZProperty();
         return st;
+    }
+
+    static TranslateTransition translateX(Node node, double start, double end, double duration) {
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
+        translateTransition.setFromX(start);
+        translateTransition.setToX(end);
+        translateTransition.setCycleCount(1);
+
+        return translateTransition;
+    }
+
+    static TranslateTransition translateY(Node node, double start, double end, double duration) {
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
+        translateTransition.setFromY(start);
+        translateTransition.setToY(end);
+        translateTransition.setCycleCount(1);
+
+        return translateTransition;
     }
 
     public static void main(String[] args) {

@@ -13,15 +13,12 @@ public class CharBlock extends TextBlock {
             rect.setFill(Color.ORANGE);
         }
 
-        double rectangleWidth = rect.getWidth();
-        double rectangleHeight = rect.getHeight();
-
         blockText = new Text(text);
         blockText.setFont(new Font("Consolas", fontSize));
         double textWidth = blockText.getLayoutBounds().getWidth();
         double textHeight = blockText.getLayoutBounds().getHeight();
-        blockText.setX((rect.getLayoutBounds().getCenterX()));
-        blockText.setY((rect.getLayoutBounds().getCenterY()));
+        blockText.setX(rect.getLayoutBounds().getCenterX() - (textWidth / 2));
+        blockText.setY(rect.getLayoutBounds().getCenterY() + (textHeight / 2.5));
 
         block = new Group(rect, blockText);
     }
