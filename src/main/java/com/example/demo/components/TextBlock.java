@@ -4,7 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public abstract class TextBlock {
+public abstract class TextBlock extends Group {
     protected Text blockText;
     protected Rectangle rect;
     protected Group block;

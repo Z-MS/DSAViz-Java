@@ -2,12 +2,16 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
+import com.example.demo.utils.CodeBlockGenerator;
+import com.example.demo.utils.RandomGenerator;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -19,6 +23,8 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 public class HelloApplication extends Application {
@@ -36,13 +42,16 @@ public class HelloApplication extends Application {
         final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
         mainArea.setLayoutX(20);
         Font font = new Font("Consolas", 20);
-        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        Rectangle[] numBlocks = new Rectangle[nums.length];
+
+        ArrayList<Comparable> inputArray = RandomGenerator.generateRandomCharacters( 10);
+        Comparable key = RandomGenerator.generateRandomCharacter();
+
+        Rectangle[] charBlocks = new Rectangle[inputArray.size()];
         ArrayList <FillTransition> numBlockAnims = new ArrayList<>();
         int blockIndent = 60;
         // ------------------- MAIN AREA - SEARCH BLOCKS ------------------
 
-        CharBlock keyBlock = new CharBlock(0,SCREENCENTER_Y - 65,60,"3",null,40);
+        CharBlock keyBlock = new CharBlock(0,SCREENCENTER_Y - 65,60, ""+ key,null,40);
         keyBlock.getRect().setStroke(Color.BLACK);
         keyBlock.getRect().setArcWidth(5);
         keyBlock.getRect().setArcHeight(5);
@@ -55,8 +64,8 @@ public class HelloApplication extends Application {
         mainArea.getChildren().add(keyBlock.getBlock());
         mainArea.getChildren().add(keyLabel);
 
-        for(int c = 0; c < nums.length; c++) {
-            CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, ""+ nums[c], null, 40);
+        for(int c = 0; c < inputArray.size(); c++) {
+            CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, ""+ inputArray.get(c), null, 40);
             Rectangle rect = charBlock.getRect();
             rect.setStroke(Color.BLACK);
             rect.setArcWidth(5);
@@ -68,7 +77,7 @@ public class HelloApplication extends Application {
             indexText.setX(rect.getLayoutBounds().getCenterX() - indexText.getLayoutBounds().getCenterX());
             indexText.setY(rect.getLayoutBounds().getMaxY() + 30);
 
-            numBlocks[c] = rect;
+            charBlocks[c] = rect;
 
 //            mainArea.getChildren().add(rect);
 //            mainArea.getChildren().add(blockText);
@@ -83,58 +92,67 @@ public class HelloApplication extends Application {
         final int indentY = (int) pane.getLayoutBounds().getCenterY();
         final int spacing = 20;
 
-        Text methodDef = new Text(indentX, indentY - 5, "linearSearch(key, arr)");
+        CodeBlockGenerator generator = new CodeBlockGenerator();
+
+        Text methodDef = new Text( "linearSearch(key, arr)");
         methodDef.setFont(new Font("Consolas", 20));
         methodDef.setFill(Color.GOLDENROD);
 
-        CodeBlock indexText = new CodeBlock(indentX + spacing, indentY, "index = -1;");
+        CodeBlock indexText = new CodeBlock("index = -1;", 15);
+        generator.addCodeBlock(indexText);
 
-        Text fortext = new Text(indentX + spacing, indentY + spacing * 1.70, "for(");
+        /*Text fortext = new Text( "for(");
         fortext.setFont(new Font("Consolas", 20));
-        fortext.setFill(Color.WHEAT);
-        CodeBlock init = new CodeBlock(fortext.getLayoutBounds().getMaxX(), indentY + spacing, "i = 0;");
-        CodeBlock counterComp = new CodeBlock(init.getRect().getLayoutBounds().getMaxX() + 5, indentY + spacing, "i < arr.length;");
-        CodeBlock increment = new CodeBlock(counterComp.getRect().getLayoutBounds().getMaxX() + 5, indentY + spacing, "i++");
-        Text openingFor = new Text(increment.getRect().getLayoutBounds().getMaxX() + 5, indentY + spacing * 1.75, ")");
-        openingFor.setFont(font);
-        openingFor.setFill(Color.WHEAT);
+        fortext.setFill(Color.WHEAT);*/
+        CodeBlock fortext = new CodeBlock("for(", 25);
+        CodeBlock init = new CodeBlock("i = 0;");
+        CodeBlock counterComp = new CodeBlock("i < arr.length;");
+        CodeBlock increment = new CodeBlock("i++");
+        CodeBlock openingFor = new CodeBlock(")");
+        ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<CodeBlock>(Arrays.asList(fortext, init, counterComp, increment, openingFor));
 
-        CodeBlock keyComp = new CodeBlock(indentX + spacing * 2, openingFor.getLayoutBounds().getMaxY(), "if(arr[i] == key)");
-        CodeBlock matchFound = new CodeBlock(indentX + spacing * 4, keyComp.getRect().getLayoutBounds().getMaxY(), "index = i;");
-        CodeBlock breakText = new CodeBlock(indentX + spacing * 4, matchFound.getRect().getLayoutBounds().getMaxY(), "break;");
+        generator.addCodeBlocks(forLoopHeader1);
 
-        CodeBlock returnText = new CodeBlock(indentX + spacing, breakText.getRect().getLayoutBounds().getMaxY(), "return;");
+        CodeBlock keyComp = new CodeBlock("if(arr[i] == key)", 35);
+        generator.addCodeBlock(keyComp);
+        CodeBlock matchFound = new CodeBlock("index = i;", 45);
+        generator.addCodeBlock(matchFound);
+        CodeBlock breakText = new CodeBlock("break;", 45);
+        generator.addCodeBlock(breakText);
 
-        Rectangle tracerBorder = new Rectangle(indentX, (pane.getLayoutBounds().getCenterY()) - 50, pane.getLayoutBounds().getWidth()/2, pane.getLayoutBounds().getHeight()/4 + 50);
-        tracerBorder.setStroke(Color.GREY);
-        tracerBorder.setFill(Color.INDIGO);
+        CodeBlock returnText = new CodeBlock("return;", 15);
+        generator.addCodeBlock(returnText);
 
-        algoTracer.getChildren().add(tracerBorder);
-        algoTracer.getChildren().add(methodDef);
-        algoTracer.getChildren().add(indexText.getBlock());
-        algoTracer.getChildren().add(fortext);
-        algoTracer.getChildren().add(init.getBlock());
-        algoTracer.getChildren().add(counterComp.getBlock());
-        algoTracer.getChildren().add(increment.getBlock());
-        algoTracer.getChildren().add(openingFor);
-        algoTracer.getChildren().add(keyComp.getBlock());
-        algoTracer.getChildren().add(matchFound.getBlock());
-        algoTracer.getChildren().add(breakText.getBlock());
-        algoTracer.getChildren().add(returnText.getBlock());
         // ------------- END OF ALGO TRACER -----------------
 
+        VBox holder = new VBox();
+        holder.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
+
+        holder.setLayoutX(indentX);
+        holder.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
+
+        VBox codetainer = new VBox();
+        codetainer.setBackground(new Background(new BackgroundFill(Color.INDIGO, null, null)));
+
+        codetainer.getChildren().add(methodDef);
+
+        codetainer.getChildren().addAll(generator.getCodeBlocks());
+        TitledPane titledPane = new TitledPane("Code", codetainer);
+
+        holder.getChildren().add(titledPane);
+
+        algoTracer.getChildren().add(holder);
         pane.getChildren().add(mainArea);
         pane.getChildren().add(algoTracer);
 
         stage.setScene(scene);
         stage.show();
 
-
         ArrayList <FillTransition> codeAnim = new ArrayList<>();
 
 
         class LinearSearch {
-            int search(int key, int[] arr) {
+            int search(Comparable key, ArrayList<Comparable> arr) {
                 int index = -1;
 
                 // must run once
@@ -144,11 +162,11 @@ public class HelloApplication extends Application {
                 FillTransition counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
                 codeAnim.add(counterCompAnim);
 
-                for(int i = 0; i < arr.length; i++) {
+                for(int i = 0; i < arr.size(); i++) {
                     FillTransition keyCompAnim = createHighlighter(keyComp.getRect(), Color.INDIGO, Color.BLACK);
                     codeAnim.add(keyCompAnim);
 
-                    FillTransition numBlockAnim = createHighlighter(numBlocks[i], Color.ORANGE, Color.RED);
+                    FillTransition numBlockAnim = createHighlighter(charBlocks[i], Color.ORANGE, Color.RED);
                     numBlockAnims.add(numBlockAnim);
 
                     FillTransition keyFillAnim = createHighlighter(keyBlock.getRect(), Color.ORANGE, Color.RED);
@@ -159,7 +177,7 @@ public class HelloApplication extends Application {
                         numBlockAnim.play();
                     });
 
-                    if(arr[i] == key) {
+                    if(arr.get(i) == key) {
 //                        keyFillAnim.setFromValue(Color.LAWNGREEN);
                         keyFillAnim.setToValue(Color.LAWNGREEN);
                         keyFillAnim.setCycleCount(1);
@@ -174,9 +192,13 @@ public class HelloApplication extends Application {
                     }
                     // if it reaches here, it means it didn't find a match
 
+                    // if this is the last element, this means we haven't found a match and we shouldn't create any new translation animations
+                    if(i + 1 == arr.size()) {
+                        break;
+                    }
 
-                    TranslateTransition moveKeyBlock = translateX(keyBlock.getBlock(), numBlocks[i].getX(), numBlocks[i+1].getX(), 500);
-                    TranslateTransition moveLabel = translateX(keyLabel, numBlocks[i].getX(), numBlocks[i + 1].getX(), 500);
+                    TranslateTransition moveKeyBlock = translateX(keyBlock.getBlock(), charBlocks[i].getX(), charBlocks[i+1].getX(), 500);
+                    TranslateTransition moveLabel = translateX(keyLabel, charBlocks[i].getX(), charBlocks[i + 1].getX(), 500);
 
                     numBlockAnim.setOnFinished(e -> {
                         moveKeyBlock.play();
@@ -189,7 +211,7 @@ public class HelloApplication extends Application {
                 return index;
             }
         }
-        new LinearSearch().search(3, nums);
+        new LinearSearch().search(key, inputArray);
         // must return something at the end of the loop, whether it broke out or not
         codeAnim.add(createHighlighter(returnText.getRect(), Color.INDIGO, Color.BLACK));
 
@@ -245,6 +267,5 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 
 }

@@ -6,31 +6,39 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class CodeBlock {
-    private Text blockText;
-    private Rectangle rect;
-    private Group block;
-    public CodeBlock(double posX, double posY, String text) {
-//        block = new Rectangle(posX, posY);
-        blockText = new Text(posX, posY, text);
+public class CodeBlock extends TextBlock {
+
+    private double indent = 0;
+    public CodeBlock(String text, double indent) {
+        blockText = new Text(text);
         blockText.setFill(Color.WHEAT);
         blockText.setFont(new Font("Consolas", 20));
 
-        rect = new Rectangle(posX, posY, blockText.getLayoutBounds().getWidth(),  blockText.getLayoutBounds().getHeight());
+        double textWidth = blockText.getLayoutBounds().getWidth();
+        double textHeight = blockText.getLayoutBounds().getHeight();
+
+        rect = new Rectangle();
+        rect.setWidth(textWidth);
+        rect.setHeight(textHeight);
         rect.setFill(Color.INDIGO);
 
         blockText.relocate(rect.getX(), rect.getY());
+
+        this.setIndent(indent);
 
         block = new Group();
         block.getChildren().add(rect);
         block.getChildren().add(blockText);
     }
 
-    public Rectangle getRect() {
-        return rect;
-    } // For animation and positioning
+    public CodeBlock(String text){
+        this(text, 0);
+    }
+    public void setIndent(double indent) {
+        this.indent = indent;
+    }
 
-    public Group getBlock() {
-        return block;
+    public double getIndent() {
+        return indent;
     }
 }
