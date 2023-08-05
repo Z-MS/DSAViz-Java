@@ -2,19 +2,21 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
+import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -23,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -114,7 +117,7 @@ public class HelloApplication extends Application {
             double initialPointerY;
             double pointerWidth;
             int blockIndent = 60;
-            // ------------------- MAIN AREA - SEARCH BLOCKS ------------------
+
             public LinearSearch() {
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, "" + inputArray.get(c), null, 40);
@@ -145,8 +148,6 @@ public class HelloApplication extends Application {
                 keyLabel.setFill(Color.BLACK);
                 keyLabel.setFont(new Font("Consolas", 30));
 
-                double firstBlockTextX = charBlocks[0].getBlockText().getLayoutBounds().getMinX();
-
                 pointer = new Polygon();
                 /*pointer.getPoints().addAll(
                         0.0, 10.0, // first vertex
@@ -163,11 +164,11 @@ public class HelloApplication extends Application {
                 pointer.setFill(Color.BLUE);
                 initialPointerX = charBlocks[0].getBlockText().getLayoutBounds().getMinX();
                 initialPointerY = SCREENCENTER_Y - 20;
-//                pointer.relocate(initialPointerX, initialPointerY);
+
                 mainArea.getChildren().addAll(keyBlock.getBlock(), keyLabel, pointer);
-                // ------------------- END OF MAIN AREA - SEARCH BLOCKS
+
             }
-            int search(/*Comparable key, ArrayList<Comparable> arr*/) {
+            int search() {
                 // must run once
                 codeAnim.add(createHighlighter(indexText.getRect(), Color.INDIGO, Color.BLACK));
                 codeAnim.add(createHighlighter(init.getRect(), Color.INDIGO, Color.BLACK));
@@ -207,6 +208,12 @@ public class HelloApplication extends Application {
 
                     // if this is the last element, this means we haven't found a match and we shouldn't create any new translation animations
                     if(i + 1 == inputArray.size()) {
+                        keyFillAnim.setToValue(Color.RED);
+                        keyFillAnim.setCycleCount(1);
+
+                        charBlockAnim.setToValue(Color.RED);
+                        charBlockAnim.setCycleCount(1);
+
                         break;
                     }
 
@@ -254,8 +261,14 @@ public class HelloApplication extends Application {
                 }
 
                 if(this.getIndex() != -1) {
+                    // reset key block and matched block colours
                     CharBlock matchedBlock = (CharBlock) Array.get(charBlocks, this.getIndex());
+                    keyBlock.getRect().setFill(Color.ORANGE);
                     matchedBlock.getRect().setFill(Color.ORANGE);
+                } else {
+                    CharBlock lastUnmatchedBlock = (CharBlock) Array.get(charBlocks, charBlocks.length - 1);
+                    keyBlock.getRect().setFill(Color.ORANGE);
+                    lastUnmatchedBlock.getRect().setFill(Color.ORANGE);
                 }
 
                 codeAnim.get(0).play();
@@ -280,7 +293,71 @@ public class HelloApplication extends Application {
         restartButton.setOnMouseClicked(e -> lSearchObject.reset());
         buttonContainer.getChildren().add(restartButton);
 
-        pane.getChildren().addAll(mainArea, algoTracer, buttonContainer);
+        HBox controls = new HBox();
+        Slider speedSlider = new Slider(-1.0, -0.2, -0.6);
+        speedSlider.setShowTickMarks(true);
+        speedSlider.setShowTickLabels(true);
+        speedSlider.setMajorTickUnit(0.4);
+        speedSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+
+                double speedFactor = Math.abs(newValue.doubleValue());
+                /*double minVal = 0.2;
+                double maxVal = 1.0;
+//                Duration duration = Duration.seconds(1.0 / speedFactor) ;
+                if(speedFactor >= 0.2 && speedFactor < 0.6) { // should be slow
+                    // a - difference from lower bound
+                    // b - difference from a to highest bound
+                    // result
+                    // 0.2 a = 0, b - 1.0 - a = 1.0, result-> speedfactor + b = 1.0
+                    // 0.4, a = 0.2, b - 1.0 - 0.2 = 0.8, result-> 0.8
+                    // 0.3 a = 0.1, b - 1.0 - 0.1 = 0.9
+                    // 0.6 a = 0.4, b - 1.0 - 0.4 = 0.6
+                    double distanceFromLower = speedFactor - minVal;
+                    double finalVal = maxVal - distanceFromLower;
+                    speedFactor = finalVal;
+                }
+                if(speedFactor <= 1.0 && speedFactor > 0.6) { // should be fast
+                    double distanceFromHigher = maxVal - speedFactor;
+                    double finalVal = minVal + distanceFromHigher;
+                    speedFactor = finalVal;
+                    // 1.0, a = 0.0, b = minVal + 0 = 0.2
+                    // 0.8, a = 0.2, b = 0.2+ 0.2 = 0.4
+                }
+                else { // somewhere in the middle, forcing the value to 0.6
+                    speedFactor = 0.6;
+                }*/
+
+                codeAnim.get(0).setDuration(Duration.seconds(speedFactor));
+            }
+
+        });
+
+        speedSlider.setLabelFormatter(new StringConverter<Double>() {
+            @Override
+            public String toString(Double n) {
+                if (n == -0.2) {
+                    return "Fast";
+                } else if (n == -0.6) {
+                    return "Normal";
+                } else if (n == -1) {
+                    return "Slow";
+                } else {
+                    return ""; // Return an empty string for other values
+                }
+            }
+
+            @Override
+            public Double fromString(String s) {
+                return null;
+            }
+        });
+
+        controls.getChildren().add(speedSlider);
+        controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
+
+        pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);
 
         stage.setScene(scene);
         stage.show();
@@ -292,7 +369,7 @@ public class HelloApplication extends Application {
         ft.setFromValue(startColor);
         ft.setToValue(endColor);
         ft.setInterpolator(Interpolator.EASE_IN);
-        ft.setDuration(Duration.millis(500));
+        ft.setDuration(Duration.millis(200));
         ft.setAutoReverse(true);
         ft.setCycleCount(2);
         return ft;
