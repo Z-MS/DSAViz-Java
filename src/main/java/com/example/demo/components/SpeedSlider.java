@@ -10,7 +10,7 @@ public class SpeedSlider extends Slider {
 
     public SpeedSlider() {
         // Create a slider for animation speed control
-        Slider speedSlider = new Slider(0.5, 2, 1);
+        Slider speedSlider = new Slider(0.25, 2, 1);
         speedSlider.setShowTickMarks(true);
         speedSlider.setShowTickLabels(true);
         speedSlider.setMajorTickUnit(0.5);
