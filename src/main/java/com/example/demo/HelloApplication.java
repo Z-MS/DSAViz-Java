@@ -48,62 +48,17 @@ public class HelloApplication extends Application {
         final int SCREENCENTER_X = (int) pane.getLayoutBounds().getCenterX();
         final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
         mainArea.setLayoutX(20);
+
         Font font = new Font("Consolas", 20);
 
-        // ------------------- ALGO TRACER --------------------------------
         final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
-        final int indentY = (int) pane.getLayoutBounds().getCenterY();
-        final int spacing = 20;
-
-        CodeBlockGenerator generator = new CodeBlockGenerator();
-
-        Text methodDef = new Text( "linearSearch(key, arr)");
-        methodDef.setFont(new Font("Consolas", 20));
-        methodDef.setFill(Color.GOLDENROD);
-
-        CodeBlock indexText = new CodeBlock("index = -1;", 15);
-        generator.addCodeBlock(indexText);
-
-        CodeBlock fortext = new CodeBlock("for(", 25);
-        CodeBlock init = new CodeBlock("i = 0;");
-        CodeBlock counterComp = new CodeBlock("i < arr.length;");
-        CodeBlock increment = new CodeBlock("i++");
-        CodeBlock openingFor = new CodeBlock(")");
-        ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<>(Arrays.asList(fortext, init, counterComp, increment, openingFor));
-
-        generator.addCodeBlocks(forLoopHeader1);
-
-        CodeBlock keyComp = new CodeBlock("if(arr[i] == key)", 35);
-        generator.addCodeBlock(keyComp);
-        CodeBlock matchFound = new CodeBlock("index = i;", 45);
-        generator.addCodeBlock(matchFound);
-        CodeBlock breakText = new CodeBlock("break;", 45);
-        generator.addCodeBlock(breakText);
-
-        CodeBlock returnText = new CodeBlock("return;", 15);
-        generator.addCodeBlock(returnText);
-
-        // ------------- END OF ALGO TRACER -----------------
-
         VBox holder = new VBox();
         holder.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
 
         holder.setLayoutX(indentX);
         holder.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
 
-        VBox codetainer = new VBox();
-        codetainer.setBackground(new Background(new BackgroundFill(Color.INDIGO, null, null)));
-
-        codetainer.getChildren().add(methodDef);
-
-        codetainer.getChildren().addAll(generator.getCodeBlocks());
-        TitledPane titledPane = new TitledPane("Code", codetainer);
-
-        holder.getChildren().add(titledPane);
-        algoTracer.getChildren().add(holder);
-
-        ArrayList <FillTransition> codeAnim = new ArrayList<>();
-        ArrayList <Transition> translateTransitions = new ArrayList<>();
+        HBox controls = new HBox();
 
         class LinearSearch {
             int index = -1;
@@ -111,14 +66,19 @@ public class HelloApplication extends Application {
             Comparable key = RandomGenerator.generateRandomCharacter();
             CharBlock[] charBlocks = new CharBlock[inputArray.size()];
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
+            ArrayList <FillTransition> codeAnim = new ArrayList<>();
+            ArrayList <Transition> translateTransitions = new ArrayList<>();
             CharBlock keyBlock;
             Polygon pointer;
             double initialPointerX;
             double initialPointerY;
             double pointerWidth;
             int blockIndent = 60;
+            
+            CodeBlock indexText, fortext, init, counterComp, increment, openingFor, keyComp, matchFound, breakText, returnText;
+            Text methodDef;
 
-            public LinearSearch() {
+            void initMainArea() {
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, "" + inputArray.get(c), null, 40);
                     Rectangle rect = charBlock.getRect();
@@ -166,8 +126,52 @@ public class HelloApplication extends Application {
                 initialPointerY = SCREENCENTER_Y - 20;
 
                 mainArea.getChildren().addAll(keyBlock.getBlock(), keyLabel, pointer);
-
             }
+            
+            void initAlgoTracer() {
+                // ------------------- ALGO TRACER --------------------------------
+                CodeBlockGenerator generator = new CodeBlockGenerator();
+
+                methodDef = new Text( "linearSearch(key, arr)");
+                methodDef.setFont(new Font("Consolas", 20));
+                methodDef.setFill(Color.GOLDENROD);
+
+                indexText = new CodeBlock("index = -1;", 15);
+                generator.addCodeBlock(indexText);
+
+                fortext = new CodeBlock("for(", 25);
+                init = new CodeBlock("i = 0;");
+                counterComp = new CodeBlock("i < arr.length;");
+                increment = new CodeBlock("i++");
+                openingFor = new CodeBlock(")");
+                ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<>(Arrays.asList(fortext, init, counterComp, increment, openingFor));
+
+                generator.addCodeBlocks(forLoopHeader1);
+
+                keyComp = new CodeBlock("if(arr[i] == key)", 35);
+                generator.addCodeBlock(keyComp);
+                matchFound = new CodeBlock("index = i;", 45);
+                generator.addCodeBlock(matchFound);
+                breakText = new CodeBlock("break;", 45);
+                generator.addCodeBlock(breakText);
+
+                returnText = new CodeBlock("return;", 15);
+                generator.addCodeBlock(returnText);
+
+                VBox codetainer = new VBox();
+                codetainer.setBackground(new Background(new BackgroundFill(Color.INDIGO, null, null)));
+
+                codetainer.getChildren().add(methodDef);
+
+                codetainer.getChildren().addAll(generator.getCodeBlocks());
+                TitledPane titledPane = new TitledPane("Code", codetainer);
+
+                holder.getChildren().add(titledPane);
+                algoTracer.getChildren().add(holder);
+
+                // ------------- END OF ALGO TRACER -----------------
+            } 
+            
             int search() {
                 // must run once
                 codeAnim.add(createHighlighter(indexText.getRect(), Color.INDIGO, Color.BLACK));
@@ -243,6 +247,47 @@ public class HelloApplication extends Application {
                 }
             }
 
+            void initControls() {
+                final double MIN_SPEED = 0.25;
+                final double MID_SPEED = 1.0;
+                final double MAX_SPEED = 2.0;
+                Slider speedSlider = new Slider(MIN_SPEED, MAX_SPEED, MID_SPEED);
+                speedSlider.setShowTickMarks(true);
+                speedSlider.setShowTickLabels(true);
+                speedSlider.setMajorTickUnit(0.25);
+                speedSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+                    double speedFactor = Math.abs(newValue.doubleValue());
+                    ArrayList<Transition> transitions = new ArrayList<>();
+                    transitions.addAll(translateTransitions);
+                    transitions.addAll(codeAnim);
+                    transitions.addAll(charBlockAnims);
+                    for(int i = 0; i < transitions.size(); i++) {
+                        transitions.get(i).setRate(speedFactor);
+                    }
+                });
+
+                speedSlider.setLabelFormatter(new StringConverter<Double>() {
+                    @Override
+                    public String toString(Double n) {
+                        if (n == MAX_SPEED) {
+                            return "Fast";
+                        } else if (n == MID_SPEED) {
+                            return "Normal";
+                        } else if (n == MIN_SPEED) {
+                            return "Slow";
+                        } else {
+                            return ""; // Return an empty string for other values
+                        }
+                    }
+
+                    @Override
+                    public Double fromString(String s) {
+                        return null;
+                    }
+                });
+
+                controls.getChildren().add(speedSlider);
+            }
             public void generateNew() {
                 // generate new key and update on screen
                 // generate new chars and change the codeblock text value
@@ -274,15 +319,22 @@ public class HelloApplication extends Application {
                 codeAnim.get(0).play();
             }
 
+            void start() {
+                codeAnim.get(0).play();
+            }
+
             public int getIndex() {
                 return index;
             }
         }
-        LinearSearch lSearchObject = new LinearSearch();
-        lSearchObject.search();
-        lSearchObject.handleOnFinished();
+        LinearSearch linearSearchVis = new LinearSearch();
 
-        codeAnim.get(0).play();
+        linearSearchVis.initMainArea();
+        linearSearchVis.initAlgoTracer();
+        linearSearchVis.search();
+        linearSearchVis.handleOnFinished();
+        linearSearchVis.initControls();
+        linearSearchVis.start();
 
         VBox buttonContainer = new VBox();
         buttonContainer.setLayoutX(10);
@@ -290,73 +342,11 @@ public class HelloApplication extends Application {
         Button restartButton = new Button("Restart");
         restartButton.setPrefWidth(150);
         restartButton.setPrefHeight(20);
-        restartButton.setOnMouseClicked(e -> lSearchObject.reset());
+        restartButton.setOnMouseClicked(e -> linearSearchVis.reset());
         buttonContainer.getChildren().add(restartButton);
 
-        HBox controls = new HBox();
-        Slider speedSlider = new Slider(-1.0, -0.2, -0.6);
-        speedSlider.setShowTickMarks(true);
-        speedSlider.setShowTickLabels(true);
-        speedSlider.setMajorTickUnit(0.4);
-        speedSlider.valueProperty().addListener(new ChangeListener<Number>(){
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-
-                double speedFactor = Math.abs(newValue.doubleValue());
-                /*double minVal = 0.2;
-                double maxVal = 1.0;
-//                Duration duration = Duration.seconds(1.0 / speedFactor) ;
-                if(speedFactor >= 0.2 && speedFactor < 0.6) { // should be slow
-                    // a - difference from lower bound
-                    // b - difference from a to highest bound
-                    // result
-                    // 0.2 a = 0, b - 1.0 - a = 1.0, result-> speedfactor + b = 1.0
-                    // 0.4, a = 0.2, b - 1.0 - 0.2 = 0.8, result-> 0.8
-                    // 0.3 a = 0.1, b - 1.0 - 0.1 = 0.9
-                    // 0.6 a = 0.4, b - 1.0 - 0.4 = 0.6
-                    double distanceFromLower = speedFactor - minVal;
-                    double finalVal = maxVal - distanceFromLower;
-                    speedFactor = finalVal;
-                }
-                if(speedFactor <= 1.0 && speedFactor > 0.6) { // should be fast
-                    double distanceFromHigher = maxVal - speedFactor;
-                    double finalVal = minVal + distanceFromHigher;
-                    speedFactor = finalVal;
-                    // 1.0, a = 0.0, b = minVal + 0 = 0.2
-                    // 0.8, a = 0.2, b = 0.2+ 0.2 = 0.4
-                }
-                else { // somewhere in the middle, forcing the value to 0.6
-                    speedFactor = 0.6;
-                }*/
-
-                codeAnim.get(0).setDuration(Duration.seconds(speedFactor));
-            }
-
-        });
-
-        speedSlider.setLabelFormatter(new StringConverter<Double>() {
-            @Override
-            public String toString(Double n) {
-                if (n == -0.2) {
-                    return "Fast";
-                } else if (n == -0.6) {
-                    return "Normal";
-                } else if (n == -1) {
-                    return "Slow";
-                } else {
-                    return ""; // Return an empty string for other values
-                }
-            }
-
-            @Override
-            public Double fromString(String s) {
-                return null;
-            }
-        });
-
-        controls.getChildren().add(speedSlider);
+        // position controls
         controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
-
         pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);
 
         stage.setScene(scene);
