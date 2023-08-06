@@ -2,14 +2,10 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
-import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableDoubleValue;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -52,19 +48,14 @@ public class HelloApplication extends Application {
         Font font = new Font("Consolas", 20);
 
         final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
-        VBox holder = new VBox();
-        holder.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
-
-        holder.setLayoutX(indentX);
-        holder.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
 
         HBox controls = new HBox();
 
         class LinearSearch {
             int index = -1;
-            ArrayList<Comparable> inputArray = RandomGenerator.generateRandomCharacters( 10);
-            Comparable key = RandomGenerator.generateRandomCharacter();
-            CharBlock[] charBlocks = new CharBlock[inputArray.size()];
+            ArrayList<Comparable> inputArray;
+            Comparable key;
+            CharBlock[] charBlocks;
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
             ArrayList <FillTransition> codeAnim = new ArrayList<>();
             ArrayList <Transition> translateTransitions = new ArrayList<>();
@@ -78,7 +69,16 @@ public class HelloApplication extends Application {
             CodeBlock indexText, fortext, init, counterComp, increment, openingFor, keyComp, matchFound, breakText, returnText;
             Text methodDef;
 
+            VBox algoTracerContainer;
+            Group mainAreaContainer;
+            TitledPane titledPane;
+
             void initMainArea() {
+                inputArray = RandomGenerator.generateRandomCharacters( 10);
+                charBlocks = new CharBlock[inputArray.size()];
+                key = RandomGenerator.generateRandomCharacter();
+                mainAreaContainer = new Group();
+
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, "" + inputArray.get(c), null, 40);
                     Rectangle rect = charBlock.getRect();
@@ -94,8 +94,7 @@ public class HelloApplication extends Application {
 
                     charBlocks[c] = charBlock;
 
-                    mainArea.getChildren().add(charBlock.getBlock());
-                    mainArea.getChildren().add(indexText);
+                    mainAreaContainer.getChildren().addAll(charBlock.getBlock(),indexText);
                 }
 
                 int middleBlockIndex = (int) Math.floor(charBlocks.length / 2);
@@ -125,7 +124,8 @@ public class HelloApplication extends Application {
                 initialPointerX = charBlocks[0].getBlockText().getLayoutBounds().getMinX();
                 initialPointerY = SCREENCENTER_Y - 20;
 
-                mainArea.getChildren().addAll(keyBlock.getBlock(), keyLabel, pointer);
+                mainAreaContainer.getChildren().addAll(keyBlock.getBlock(), keyLabel, pointer);
+                mainArea.getChildren().add(mainAreaContainer);
             }
             
             void initAlgoTracer() {
@@ -164,10 +164,16 @@ public class HelloApplication extends Application {
                 codetainer.getChildren().add(methodDef);
 
                 codetainer.getChildren().addAll(generator.getCodeBlocks());
-                TitledPane titledPane = new TitledPane("Code", codetainer);
+                titledPane = new TitledPane("Code", codetainer);
 
-                holder.getChildren().add(titledPane);
-                algoTracer.getChildren().add(holder);
+                algoTracerContainer = new VBox();
+                algoTracerContainer.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
+
+                algoTracerContainer.setLayoutX(indentX);
+                algoTracerContainer.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
+
+                algoTracerContainer.getChildren().add(titledPane);
+                algoTracer.getChildren().add(algoTracerContainer);
 
                 // ------------- END OF ALGO TRACER -----------------
             } 
@@ -205,7 +211,7 @@ public class HelloApplication extends Application {
 
                         codeAnim.add(createHighlighter(matchFound.getRect(), Color.INDIGO, Color.BLACK));
                         codeAnim.add(createHighlighter(breakText.getRect(), Color.INDIGO, Color.BLACK));
-                        index = i;
+                        this.setIndex(i);
                         break;
                     }
                     // if it reaches here, it means it didn't find a match
@@ -261,8 +267,8 @@ public class HelloApplication extends Application {
                     transitions.addAll(translateTransitions);
                     transitions.addAll(codeAnim);
                     transitions.addAll(charBlockAnims);
-                    for(int i = 0; i < transitions.size(); i++) {
-                        transitions.get(i).setRate(speedFactor);
+                    for (Transition transition : transitions) {
+                        transition.setRate(speedFactor);
                     }
                 });
 
@@ -289,7 +295,19 @@ public class HelloApplication extends Application {
                 controls.getChildren().add(speedSlider);
             }
             public void generateNew() {
-                // generate new key and update on screen
+                algoTracerContainer.getChildren().remove(titledPane);
+                mainArea.getChildren().remove(mainAreaContainer);
+
+                translateTransitions.clear();
+                codeAnim.clear();
+                charBlockAnims.clear();
+
+                this.setIndex(-1);
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.search();
+                this.handleOnFinished();
+                this.start();
                 // generate new chars and change the codeblock text value
             }
 
@@ -301,8 +319,8 @@ public class HelloApplication extends Application {
                 transitions.addAll(translateTransitions);
                 transitions.addAll(codeAnim);
                 transitions.addAll(charBlockAnims);
-                for(int i = 0; i < transitions.size(); i++) {
-                    transitions.get(i).stop();
+                for (Transition transition : transitions) {
+                    transition.stop();
                 }
 
                 if(this.getIndex() != -1) {
@@ -326,6 +344,10 @@ public class HelloApplication extends Application {
             public int getIndex() {
                 return index;
             }
+
+            public void setIndex(int index) {
+                this.index = index;
+            }
         }
         LinearSearch linearSearchVis = new LinearSearch();
 
@@ -336,14 +358,20 @@ public class HelloApplication extends Application {
         linearSearchVis.initControls();
         linearSearchVis.start();
 
-        VBox buttonContainer = new VBox();
+        HBox buttonContainer = new HBox();
         buttonContainer.setLayoutX(10);
         buttonContainer.setLayoutY(20);
         Button restartButton = new Button("Restart");
         restartButton.setPrefWidth(150);
         restartButton.setPrefHeight(20);
         restartButton.setOnMouseClicked(e -> linearSearchVis.reset());
-        buttonContainer.getChildren().add(restartButton);
+
+        Button newSearchButton = new Button("New search");
+        newSearchButton.setPrefWidth(150);
+        newSearchButton.setPrefHeight(20);
+        newSearchButton.setOnMouseClicked(e -> linearSearchVis.generateNew());
+
+        buttonContainer.getChildren().addAll(restartButton, newSearchButton);
 
         // position controls
         controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
