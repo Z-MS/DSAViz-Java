@@ -8,7 +8,6 @@ public abstract class TextBlock extends Group {
     protected Text blockText;
     protected Rectangle rect;
     protected Group block;
-
     public Rectangle getRect() {
         return rect;
     }

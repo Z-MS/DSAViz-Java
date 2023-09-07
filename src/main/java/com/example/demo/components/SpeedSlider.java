@@ -3,33 +3,44 @@ package com.example.demo.components;
 import javafx.animation.FillTransition;
 import javafx.scene.control.Slider;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
-public class SpeedSlider extends Slider {
-    private final Duration MIN_DURATION = Duration.seconds(0.5);
-    private final Duration MAX_DURATION = Duration.seconds(2);
+public class SpeedSlider {
+    private final double MIN_SPEED = 0.25;
+    private final double MID_SPEED = 1.0;
+    private final double MAX_SPEED = 2.0;
 
     private Slider speedSlider;
     public SpeedSlider() {
         // Create a slider for animation speed control
-        speedSlider = new Slider(0.25, 2, 1);
+        speedSlider = new Slider(MIN_SPEED, MAX_SPEED, MID_SPEED);
         speedSlider.setShowTickMarks(true);
         speedSlider.setShowTickLabels(true);
-        speedSlider.setMajorTickUnit(0.5);
-        speedSlider.setBlockIncrement(0.5);
+        speedSlider.setMajorTickUnit(0.25);
 
+        speedSlider.setLabelFormatter(new StringConverter<Double>() {
+            @Override
+            public String toString(Double n) {
+                if (n == MAX_SPEED) {
+                    return "Fast";
+                } else if (n == MID_SPEED) {
+                    return "Normal";
+                } else if (n == MIN_SPEED) {
+                    return "Slow";
+                } else {
+                    return ""; // Return an empty string for other values
+                }
+            }
+
+            @Override
+            public Double fromString(String s) {
+                return null;
+            }
+        });
     }
 
     public Slider getSpeedSlider() {
         return speedSlider;
     }
 
-    public void setAnimationSpeed(FillTransition fillTransition, double speedFactor) {
-        Duration duration = Duration.seconds(1.0 / speedFactor);
-        if (duration.compareTo(MAX_DURATION) > 0) {
-            duration = MAX_DURATION;
-        } else if (duration.compareTo(MIN_DURATION) < 0) {
-            duration = MIN_DURATION;
-        }
-        fillTransition.setDuration(duration);
-    }
 }

@@ -1,9 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.components.CharBlock;
-import com.example.demo.components.CodeBlock;
-import com.example.demo.utils.CodeBlockGenerator;
-import com.example.demo.utils.RandomGenerator;
+import com.example.demo.components.*;
+import com.example.demo.utils.*;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -59,6 +57,7 @@ public class HelloApplication extends Application {
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
             ArrayList <FillTransition> codeAnim = new ArrayList<>();
             ArrayList <Transition> translateTransitions = new ArrayList<>();
+            ArrayList<Transition> allAnimations = new ArrayList<>();
             CharBlock keyBlock;
             Polygon pointer;
             double initialPointerX;
@@ -202,7 +201,6 @@ public class HelloApplication extends Application {
                     });
 
                     if(inputArray.get(i) == key) {
-//                        keyFillAnim.setFromValue(Color.LAWNGREEN);
                         keyFillAnim.setToValue(Color.LAWNGREEN);
                         keyFillAnim.setCycleCount(1);
 
@@ -251,44 +249,20 @@ public class HelloApplication extends Application {
                     FillTransition nextAnim = codeAnim.get(count + 1);
                     currentAnim.setOnFinished(e -> nextAnim.play());
                 }
+
+
             }
 
             void initControls() {
-                final double MIN_SPEED = 0.25;
-                final double MID_SPEED = 1.0;
-                final double MAX_SPEED = 2.0;
-                Slider speedSlider = new Slider(MIN_SPEED, MAX_SPEED, MID_SPEED);
-                speedSlider.setShowTickMarks(true);
-                speedSlider.setShowTickLabels(true);
-                speedSlider.setMajorTickUnit(0.25);
+                Slider speedSlider = new SpeedSlider().getSpeedSlider();
                 speedSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
                     double speedFactor = Math.abs(newValue.doubleValue());
-                    ArrayList<Transition> transitions = new ArrayList<>();
-                    transitions.addAll(translateTransitions);
-                    transitions.addAll(codeAnim);
-                    transitions.addAll(charBlockAnims);
-                    for (Transition transition : transitions) {
-                        transition.setRate(speedFactor);
-                    }
-                });
 
-                speedSlider.setLabelFormatter(new StringConverter<Double>() {
-                    @Override
-                    public String toString(Double n) {
-                        if (n == MAX_SPEED) {
-                            return "Fast";
-                        } else if (n == MID_SPEED) {
-                            return "Normal";
-                        } else if (n == MIN_SPEED) {
-                            return "Slow";
-                        } else {
-                            return ""; // Return an empty string for other values
-                        }
-                    }
-
-                    @Override
-                    public Double fromString(String s) {
-                        return null;
+                    allAnimations.addAll(translateTransitions);
+                    allAnimations.addAll(codeAnim);
+                    allAnimations.addAll(charBlockAnims);
+                    for (Transition animation : allAnimations) {
+                        animation.setRate(speedFactor);
                     }
                 });
 
@@ -315,12 +289,12 @@ public class HelloApplication extends Application {
                 // translate the key block and key label back to the position of the first element, then start the codeAnimation
                 pointer.setTranslateX(charBlocks[0].getBlockText().getLayoutBounds().getMinX() - pointerWidth);
 
-                ArrayList<Transition> transitions = new ArrayList<>();
+                /*ArrayList<Transition> transitions = new ArrayList<>();
                 transitions.addAll(translateTransitions);
                 transitions.addAll(codeAnim);
-                transitions.addAll(charBlockAnims);
-                for (Transition transition : transitions) {
-                    transition.stop();
+                transitions.addAll(charBlockAnims);*/
+                for (Transition animation : allAnimations) {
+                    animation.stop();
                 }
 
                 if(this.getIndex() != -1) {
