@@ -25,9 +25,11 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 
-public class LinearSearch extends Application {
-    @Override
-    public void start(Stage primaryStage) throws IOException {
+public class LinearSearch {
+    private Scene scene;
+    /*@Override
+    public void start(Stage primaryStage) throws IOException {*/
+    public LinearSearch() {
         /*FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("My First JavaFX app!");
@@ -36,8 +38,8 @@ public class LinearSearch extends Application {
         Pane pane = new Pane();
         Group algoTracer = new Group();
         Group mainArea = new Group();
-        Scene scene = new Scene(pane, 1366, 700, Color.GHOSTWHITE);
-        Stage stage = new Stage();
+        scene = new Scene(pane, 1366, 500, Color.GHOSTWHITE);
+        // Stage stage = new Stage();
         final int SCREENCENTER_X = (int) pane.getLayoutBounds().getCenterX();
         final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
         mainArea.setLayoutX(20);
@@ -349,9 +351,13 @@ public class LinearSearch extends Application {
         // position controls
         controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
         pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);
-
+/*
         stage.setScene(scene);
-        stage.show();
+        stage.show();*/
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
     static FillTransition createHighlighter(Shape node, Color startColor, Color endColor) {
@@ -390,8 +396,5 @@ public class LinearSearch extends Application {
         return translateTransition;
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
 
 }

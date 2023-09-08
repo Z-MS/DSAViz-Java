@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.MainMenuController">
+<AnchorPane prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.MainMenuController">
    <children>
       <GridPane layoutX="75.0" layoutY="46.0" prefHeight="440.0" prefWidth="724.0">
         <columnConstraints>
@@ -30,7 +29,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Button alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Visualise">
+                  <Button alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#enterLinearSearchVis" text="Visualise">
                      <font>
                         <Font size="18.0" />
                      </font>

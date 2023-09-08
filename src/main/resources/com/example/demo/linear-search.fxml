@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="linearSearch" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchController">
+   <children>
+      <ToolBar fx:id="toolbar" layoutX="6.0" layoutY="7.0" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="1359.0">
+        <items>
+          <Button fx:id="tool" mnemonicParsing="false" onAction="#goHome" text="Home">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+        </items>
+      </ToolBar>
+   </children>
+</Pane>
