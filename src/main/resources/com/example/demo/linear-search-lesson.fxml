@@ -7,13 +7,14 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="linearSearch" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchController">
+
+<Pane prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchLesson">
    <children>
-      <ToolBar fx:id="toolbar" layoutX="6.0" layoutY="7.0" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="1359.0">
+      <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="1366.0">
         <items>
-            <HBox alignment="CENTER" spacing="500.0">
+            <HBox spacing="500.0">
                <children>
-                <Button fx:id="tool" mnemonicParsing="false" onAction="#goHome" text="Home">
+                <Button mnemonicParsing="false" onAction="#goHome" text="Home">
                      <font>
                         <Font size="14.0" />
                      </font>

@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.utils.NavigationHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,5 +31,15 @@ public class MainMenuController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void enterLinearSearchLesson(ActionEvent event) throws IOException {
+        /*loader = new FXMLLoader(HelloApplication.class.getResource("linear-search-lesson.fxml"));
+        root = loader.load();
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();*/
+        NavigationHelper.goToPage(event, "linear-search-lesson.fxml");
     }
 }
