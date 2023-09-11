@@ -34,12 +34,19 @@ public class MainMenuController {
     }
 
     public void enterLinearSearchLesson(ActionEvent event) throws IOException {
-        /*loader = new FXMLLoader(HelloApplication.class.getResource("linear-search-lesson.fxml"));
-        root = loader.load();
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();*/
         NavigationHelper.goToPage(event, "linear-search-lesson.fxml");
+    }
+
+    public void enterBinarySearchVis(ActionEvent event) throws IOException {
+        loader = new FXMLLoader(HelloApplication.class.getResource("binary-search.fxml"));
+        root = loader.load();
+
+        BinarySearchController binarySearchController = loader.getController();
+        binarySearchController.loadBinarySearch(new BinarySearch().getScene());
+
+        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 }

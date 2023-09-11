@@ -9,21 +9,20 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-public class LinearSearchController {
+public class BinarySearchController {
     @FXML
-    Pane linearSearch;
+    Pane binarySearch;
     @FXML
     ToolBar toolbar;
     public void goHome(ActionEvent event) throws IOException {
         NavigationHelper.goHome(event);
     }
 
-    public void loadLinearSearch(Scene scene) {
+    public void loadBinarySearch(Scene scene) {
         Pane newScene = (Pane) scene.getRoot();
 
-        linearSearch.getChildren().add(newScene);
+        binarySearch.getChildren().add(newScene);
         double toolbarBottom = toolbar.getPrefHeight() + toolbar.getLayoutY();
         newScene.setLayoutY(toolbarBottom);
     }
-
 }

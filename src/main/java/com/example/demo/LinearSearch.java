@@ -1,9 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.components.*;
-import com.example.demo.utils.*;
+import com.example.demo.components.CharBlock;
+import com.example.demo.components.CodeBlock;
+import com.example.demo.components.SpeedSlider;
+import com.example.demo.utils.CodeBlockGenerator;
+import com.example.demo.utils.RandomGenerator;
 import javafx.animation.*;
-import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -17,12 +19,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class LinearSearch {
@@ -30,11 +31,6 @@ public class LinearSearch {
     /*@Override
     public void start(Stage primaryStage) throws IOException {*/
     public LinearSearch() {
-        /*FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("My First JavaFX app!");
-        stage.setScene(scene);*/
-
         Pane pane = new Pane();
         Group algoTracer = new Group();
         Group mainArea = new Group();
