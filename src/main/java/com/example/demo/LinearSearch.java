@@ -42,8 +42,6 @@ public class LinearSearch {
 
         Font font = new Font("Consolas", 20);
 
-        final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
-
         HBox controls = new HBox();
 
         class Visualise {
@@ -62,8 +60,7 @@ public class LinearSearch {
             double pointerWidth;
             int blockIndent = 60;
 
-            CodeBlock indexText, fortext, init, counterComp, increment, openingFor, keyComp, matchFound, breakText, returnText;
-            Text methodDef;
+            CodeBlock methodDef, indexText, fortext, init, counterComp, increment, closingParen, keyComp, matchFound, breakText, returnText;
 
             VBox algoTracerContainer;
             Group mainAreaContainer;
@@ -128,9 +125,10 @@ public class LinearSearch {
                 // ------------------- ALGO TRACER --------------------------------
                 CodeBlockGenerator generator = new CodeBlockGenerator();
 
-                methodDef = new Text( "linearSearch(key, arr)");
-                methodDef.setFont(new Font("Consolas", 20));
-                methodDef.setFill(Color.GOLDENROD);
+                methodDef = new CodeBlock( "linearSearch(key, arr)", 5);
+                methodDef.getBlockText().setFont(new Font("Consolas", 20));
+                methodDef.getBlockText().setFill(Color.GOLDENROD);
+                generator.addCodeBlock(methodDef);
 
                 indexText = new CodeBlock("index = -1;", 15);
                 generator.addCodeBlock(indexText);
@@ -139,8 +137,8 @@ public class LinearSearch {
                 init = new CodeBlock("i = 0;");
                 counterComp = new CodeBlock("i < arr.length;");
                 increment = new CodeBlock("i++");
-                openingFor = new CodeBlock(")");
-                ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<>(Arrays.asList(fortext, init, counterComp, increment, openingFor));
+                closingParen = new CodeBlock(")");
+                ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<>(Arrays.asList(fortext, init, counterComp, increment, closingParen));
 
                 generator.addCodeBlocks(forLoopHeader1);
 
@@ -157,13 +155,12 @@ public class LinearSearch {
                 VBox codetainer = new VBox();
                 codetainer.setBackground(new Background(new BackgroundFill(Color.INDIGO, null, null)));
 
-                codetainer.getChildren().add(methodDef);
-
                 codetainer.getChildren().addAll(generator.getCodeBlocks());
                 titledPane = new TitledPane("Code", codetainer);
 
                 algoTracerContainer = new VBox();
                 algoTracerContainer.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
+                final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
 
                 algoTracerContainer.setLayoutX(indentX);
                 algoTracerContainer.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
