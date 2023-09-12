@@ -4,6 +4,9 @@ import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
+import com.example.demo.utils.Transitions;
+import javafx.animation.FillTransition;
+import javafx.animation.Transition;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,6 +20,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class BinarySearch {
     private Scene scene;
@@ -30,8 +34,14 @@ public class BinarySearch {
         mainArea.setLayoutX(20);
         mainArea.setLayoutY(20);
         class Visualiser {
+            int index = -1;
             ArrayList<Comparable> inputArray;
             Comparable key;
+
+            ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
+            ArrayList <FillTransition> codeAnims = new ArrayList<>();
+            ArrayList <Transition> translateTransitions = new ArrayList<>();
+            ArrayList<Transition> allAnimations = new ArrayList<>();
             CharBlock[] charBlocks;
             CharBlock keyBlock;
             Polygon startPointer, midPointer, endPointer;
@@ -44,9 +54,11 @@ public class BinarySearch {
             TitledPane titledPane;
 
             void initMainArea() {
-                inputArray = RandomGenerator.generateRandomCharacters( 10);
+                inputArray = RandomGenerator.generateRandomNumbers(5, 15, 10);
+                Collections.sort(inputArray);
+
                 charBlocks = new CharBlock[inputArray.size()];
-                key = RandomGenerator.generateRandomCharacter();
+                key = RandomGenerator.generateRandomNumber(0, 15);
                 mainAreaContainer = new Group();
                 int blockIndent = 60;
                 for (int c = 0; c < inputArray.size(); c++) {
@@ -175,11 +187,65 @@ public class BinarySearch {
                 algoTracerContainer.getChildren().add(titledPane);
                 algoTracer.getChildren().add(algoTracerContainer);
             }
+
+            int search() {
+                int start = 0, end = inputArray.size() - 1, middle;
+
+                FillTransition whileConditionAnim = Transitions.createHighlighter(whileCondition.getRect(), "code", null);
+                codeAnims.add(whileConditionAnim);
+                while (start <= end) {
+                    FillTransition dividerAnim = Transitions.createHighlighter(divider.getRect(), "code", null);
+                    codeAnims.add(dividerAnim);
+                    middle = (start + end) / 2;
+
+                    FillTransition keyEqualsAnim = Transitions.createHighlighter(keyEquals.getRect(), "code", null);
+                    codeAnims.add(keyEqualsAnim);
+                    if(inputArray.get(middle) == key) {
+                        codeAnims.add(Transitions.createHighlighter(matchFound.getRect(), "code", null));
+                        this.setIndex(middle);
+                        return middle;
+                    } else if (inputArray.get(middle).compareTo(key) > 0) {
+                        codeAnims.add(Transitions.createHighlighter(keyLess.getRect(), "code", null));
+                        codeAnims.add(Transitions.createHighlighter(goLeft.getRect(), "code", null));
+                        end = middle - 1;
+                    } else {
+                        codeAnims.add(Transitions.createHighlighter(goRight.getRect(), "code", null));
+                        start = middle + 1;
+                    }
+                }
+                codeAnims.add(Transitions.createHighlighter(noMatch.getRect(), "code", null));
+                return -1;
+            }
+
+            public void handleOnFinished() {
+                for(int count = 0; count < codeAnims.size() - 1; count++) {
+                    FillTransition currentAnim = codeAnims.get(count);
+                    if(currentAnim.getOnFinished() != null) {
+                        continue;
+                    }
+                    FillTransition nextAnim = codeAnims.get(count + 1);
+                    currentAnim.setOnFinished(e -> nextAnim.play());
+                }
+            }
+
+            void start() {
+                codeAnims.get(0).play();
+            }
+            public int getIndex() {
+                return index;
+            }
+
+            public void setIndex(int index) {
+                this.index = index;
+            }
         }
 
         Visualiser binarySearchVis = new Visualiser();
         binarySearchVis.initAlgoTracer();
         binarySearchVis.initMainArea();
+        binarySearchVis.search();
+        binarySearchVis.handleOnFinished();
+        binarySearchVis.start();
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutX(10);

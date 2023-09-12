@@ -50,13 +50,11 @@ public class LinearSearch {
             Comparable key;
             CharBlock[] charBlocks;
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
-            ArrayList <FillTransition> codeAnim = new ArrayList<>();
+            ArrayList <FillTransition> codeAnims = new ArrayList<>();
             ArrayList <Transition> translateTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
             CharBlock keyBlock;
             Polygon pointer;
-            double initialPointerX;
-            double initialPointerY;
             double pointerWidth;
 
             CodeBlock methodDef, indexText, fortext, init, counterComp, increment, closingParen, keyComp, matchFound, breakText, returnText;
@@ -114,8 +112,6 @@ public class LinearSearch {
 
                 pointerWidth = pointer.getLayoutBounds().getWidth();
                 pointer.setFill(Color.BLUE);
-                initialPointerX = charBlocks[0].getBlockText().getLayoutBounds().getMinX();
-                initialPointerY = SCREENCENTER_Y - 20;
 
                 mainAreaContainer.getChildren().addAll(keyBlock.getBlock(), keyLabel, pointer);
                 mainArea.getChildren().add(mainAreaContainer);
@@ -173,15 +169,15 @@ public class LinearSearch {
 
             int search() {
                 // must run once
-                codeAnim.add(createHighlighter(indexText.getRect(), Color.INDIGO, Color.BLACK));
-                codeAnim.add(createHighlighter(init.getRect(), Color.INDIGO, Color.BLACK));
+                codeAnims.add(createHighlighter(indexText.getRect(), Color.INDIGO, Color.BLACK));
+                codeAnims.add(createHighlighter(init.getRect(), Color.INDIGO, Color.BLACK));
                 // must run at least once
                 FillTransition counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
-                codeAnim.add(counterCompAnim);
+                codeAnims.add(counterCompAnim);
 
                 for(int i = 0; i < inputArray.size(); i++) {
                     FillTransition keyCompAnim = createHighlighter(keyComp.getRect(), Color.INDIGO, Color.BLACK);
-                    codeAnim.add(keyCompAnim);
+                    codeAnims.add(keyCompAnim);
 
                     FillTransition charBlockAnim = createHighlighter(charBlocks[i].getRect(), Color.ORANGE, Color.RED);
                     charBlockAnims.add(charBlockAnim);
@@ -201,8 +197,8 @@ public class LinearSearch {
                         charBlockAnim.setToValue(Color.LAWNGREEN);
                         charBlockAnim.setCycleCount(1);
 
-                        codeAnim.add(createHighlighter(matchFound.getRect(), Color.INDIGO, Color.BLACK));
-                        codeAnim.add(createHighlighter(breakText.getRect(), Color.INDIGO, Color.BLACK));
+                        codeAnims.add(createHighlighter(matchFound.getRect(), Color.INDIGO, Color.BLACK));
+                        codeAnims.add(createHighlighter(breakText.getRect(), Color.INDIGO, Color.BLACK));
                         this.setIndex(i);
                         break;
                     }
@@ -225,26 +221,24 @@ public class LinearSearch {
                     charBlockAnim.setOnFinished(e -> {
                         movePointer.play();
                     });
-                    codeAnim.add(createHighlighter(increment.getRect(), Color.INDIGO, Color.BLACK));
+                    codeAnims.add(createHighlighter(increment.getRect(), Color.INDIGO, Color.BLACK));
                     counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
-                    codeAnim.add(counterCompAnim);
+                    codeAnims.add(counterCompAnim);
                 }
                 // must return something at the end of the loop, whether it broke out or not
-                codeAnim.add(createHighlighter(returnText.getRect(), Color.INDIGO, Color.BLACK));
+                codeAnims.add(createHighlighter(returnText.getRect(), Color.INDIGO, Color.BLACK));
                 return index;
             }
 
             public void handleOnFinished() {
-                for(int count = 0; count < codeAnim.size() - 1; count++) {
-                    FillTransition currentAnim = codeAnim.get(count);
+                for(int count = 0; count < codeAnims.size() - 1; count++) {
+                    FillTransition currentAnim = codeAnims.get(count);
                     if(currentAnim.getOnFinished() != null) {
                         continue;
                     }
-                    FillTransition nextAnim = codeAnim.get(count + 1);
+                    FillTransition nextAnim = codeAnims.get(count + 1);
                     currentAnim.setOnFinished(e -> nextAnim.play());
                 }
-
-
             }
 
             void initControls() {
@@ -253,7 +247,7 @@ public class LinearSearch {
                     double speedFactor = Math.abs(newValue.doubleValue());
 
                     allAnimations.addAll(translateTransitions);
-                    allAnimations.addAll(codeAnim);
+                    allAnimations.addAll(codeAnims);
                     allAnimations.addAll(charBlockAnims);
                     for (Transition animation : allAnimations) {
                         animation.setRate(speedFactor);
@@ -267,7 +261,7 @@ public class LinearSearch {
                 mainArea.getChildren().remove(mainAreaContainer);
 
                 translateTransitions.clear();
-                codeAnim.clear();
+                codeAnims.clear();
                 charBlockAnims.clear();
 
                 this.setIndex(-1);
@@ -302,11 +296,11 @@ public class LinearSearch {
                     lastUnmatchedBlock.getRect().setFill(Color.ORANGE);
                 }
 
-                codeAnim.get(0).play();
+                codeAnims.get(0).play();
             }
 
             void start() {
-                codeAnim.get(0).play();
+                codeAnims.get(0).play();
             }
 
             public int getIndex() {
