@@ -58,7 +58,6 @@ public class LinearSearch {
             double initialPointerX;
             double initialPointerY;
             double pointerWidth;
-            int blockIndent = 60;
 
             CodeBlock methodDef, indexText, fortext, init, counterComp, increment, closingParen, keyComp, matchFound, breakText, returnText;
 
@@ -71,6 +70,7 @@ public class LinearSearch {
                 charBlocks = new CharBlock[inputArray.size()];
                 key = RandomGenerator.generateRandomCharacter();
                 mainAreaContainer = new Group();
+                int blockIndent = 60;
 
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y, 60, "" + inputArray.get(c), null, 40);

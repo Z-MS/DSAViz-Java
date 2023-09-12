@@ -1,13 +1,17 @@
 package com.example.demo;
 
+import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
 import com.example.demo.utils.CodeBlockGenerator;
+import com.example.demo.utils.RandomGenerator;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -22,11 +26,101 @@ public class BinarySearch {
         Group algoTracer = new Group();
         Group mainArea = new Group();
         scene = new Scene(pane, 1366, 500, Color.GHOSTWHITE);
-
+        final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
+        mainArea.setLayoutX(20);
+        mainArea.setLayoutY(20);
         class Visualiser {
+            ArrayList<Comparable> inputArray;
+            Comparable key;
+            CharBlock[] charBlocks;
+            CharBlock keyBlock;
+            Polygon startPointer, midPointer, endPointer;
+            Text startPointerLabel, midPointerLabel, endPointerLabel;
+            double startPointerWidth, midPointerWidth, endPointerWidth;
+
+            Group mainAreaContainer;
             CodeBlock methodDef, startendDeclaration, whileText, whileCondition, closingParen, divider, keyEquals, matchFound, keyLess, goLeft, elseText, goRight, noMatch;
             VBox algoTracerContainer;
             TitledPane titledPane;
+
+            void initMainArea() {
+                inputArray = RandomGenerator.generateRandomCharacters( 10);
+                charBlocks = new CharBlock[inputArray.size()];
+                key = RandomGenerator.generateRandomCharacter();
+                mainAreaContainer = new Group();
+                int blockIndent = 60;
+                for (int c = 0; c < inputArray.size(); c++) {
+                    CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                    Rectangle rect = charBlock.getRect();
+                    rect.setStroke(Color.BLACK);
+                    rect.setArcWidth(5);
+                    rect.setArcHeight(5);
+
+                    Text indexText = new Text("" + c);
+                    indexText.setFont(new Font("Consolas", 30));
+                    indexText.setFill(Color.ROSYBROWN);
+                    indexText.setX(rect.getLayoutBounds().getCenterX() - indexText.getLayoutBounds().getCenterX());
+                    indexText.setY(rect.getLayoutBounds().getMaxY() + 30);
+
+                    charBlocks[c] = charBlock;
+
+                    mainAreaContainer.getChildren().addAll(charBlock.getBlock(),indexText);
+                }
+
+                int middleBlockIndex = (int) Math.floor(charBlocks.length / 2);
+                keyBlock = new CharBlock(charBlocks[middleBlockIndex].getRect().getX(), SCREENCENTER_Y / 1.5, 60, "" + key, null, 40);
+                keyBlock.getRect().setStroke(Color.BLACK);
+                keyBlock.getRect().setArcWidth(5);
+                keyBlock.getRect().setArcHeight(5);
+
+                Text keyLabel = new Text(keyBlock.getBlockText().getLayoutBounds().getMinX() - 10, keyBlock.getRect().getLayoutBounds().getMinY() - 10, "key");
+                keyLabel.setFill(Color.BLACK);
+                keyLabel.setFont(new Font("Consolas", 30));
+
+                startPointer = new Polygon();
+                startPointer.getPoints().addAll(
+                        charBlocks[0].getBlockText().getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[0].getBlockText().getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[0].getBlockText().getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
+                );
+
+                startPointerWidth = startPointer.getLayoutBounds().getWidth();
+                startPointer.setFill(Color.BLUE);
+                startPointerLabel = new Text(startPointer.getLayoutBounds().getMinX() - 10 , startPointer.getLayoutBounds().getMaxY() - 20, "start");
+                startPointerLabel.setFont(new Font("Consolas", 15));
+                startPointerLabel.setFill(Color.BLACK);
+
+                midPointer = new Polygon();
+                int midIndex = (charBlocks.length - 1)/2;
+                midPointer.getPoints().addAll(
+                        charBlocks[midIndex].getBlockText().getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[midIndex].getBlockText().getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[midIndex].getBlockText().getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
+                );
+
+                midPointerWidth = midPointer.getLayoutBounds().getWidth();
+                midPointer.setFill(Color.RED);
+                midPointerLabel = new Text(midPointer.getLayoutBounds().getMinX() - 10 , midPointer.getLayoutBounds().getMaxY() - 20, "middle");
+                midPointerLabel.setFont(new Font("Consolas", 15));
+                midPointerLabel.setFill(Color.BLACK);
+
+                endPointer = new Polygon();
+                int lastIndex = charBlocks.length - 1;
+                endPointer.getPoints().addAll(
+                        charBlocks[lastIndex].getBlockText().getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[lastIndex].getBlockText().getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                        charBlocks[lastIndex].getBlockText().getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
+                );
+
+                endPointerWidth = endPointer.getLayoutBounds().getWidth();
+                endPointer.setFill(Color.GREEN);
+                endPointerLabel = new Text(endPointer.getLayoutBounds().getMinX() , endPointer.getLayoutBounds().getMaxY() - 20, "end");
+                endPointerLabel.setFont(new Font("Consolas", 15));
+                endPointerLabel.setFill(Color.BLACK);
+
+                mainAreaContainer.getChildren().addAll(keyBlock.getBlock(), keyLabel, startPointer, startPointerLabel, midPointer, midPointerLabel, endPointer, endPointerLabel);
+                mainArea.getChildren().add(mainAreaContainer);
+            }
             void initAlgoTracer() {
                 CodeBlockGenerator generator = new CodeBlockGenerator();
                 methodDef = new CodeBlock("binarySearch(array, key)");
@@ -85,6 +179,7 @@ public class BinarySearch {
 
         Visualiser binarySearchVis = new Visualiser();
         binarySearchVis.initAlgoTracer();
+        binarySearchVis.initMainArea();
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutX(10);
