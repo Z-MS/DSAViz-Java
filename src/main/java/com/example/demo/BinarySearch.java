@@ -68,11 +68,16 @@ public class BinarySearch {
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = 5;// RandomGenerator.generateRandomNumber(5, 10);
+                key = 16;// RandomGenerator.generateRandomNumber(5, 10);
                 mainAreaContainer = new Group();
-                int blockIndent = 60;
                 for (int c = 0; c < inputArray.size(); c++) {
-                    CharBlock charBlock = new CharBlock((blockIndent + 15) * c, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                    CharBlock charBlock;
+                    if(c == 0) {
+                        charBlock = new CharBlock(20, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                    } else {
+                        double previousBlockEdge = charBlocks[c-1].getRect().getLayoutBounds().getMaxX();
+                        charBlock = new CharBlock(previousBlockEdge + 15, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                    }
                     Rectangle rect = charBlock.getRect();
                     rect.setStroke(Color.BLACK);
                     rect.setArcWidth(5);
@@ -264,34 +269,35 @@ public class BinarySearch {
                         return middle;
                     } else {
                         if (inputArray.get(middle).compareTo(key) > 0) {
-                            double distance = end - 1 < 0 ? indexTextCentres.get(0) - endPointerWidth: indexTextCentres.get(middle - 1) - endPointerShape.getLayoutBounds().getCenterX();
-                            TranslateTransition goLeftAnim = Transitions.translateX(endPointer, distance, 200);
+                            double distance;
                             if (middle - 1 < 0) {
-                                /*distance = indexTextCentres.get(0) - 1;
-                                goLeftAnim = Transitions.translateX(endPointer, distance, 200);
-                                goLeftAnim.setByX(distance);*/
+                                // negating it so the translate X can move left
+                                distance = -(endPointerWidth * 3);
+
                                 // MAKE RED AND BREAK
+                            } else {
+                                distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
                             }
-//                            distance = indexTextCentres.get(middle - 1) - endPointerShape.getLayoutBounds().getCenterX();
+                            TranslateTransition goLeftAnim = Transitions.translateX(endPointer, distance, 200);
 
                             translateTransitions.add(goLeftAnim);
                             checkBlockAnim.setOnFinished(e -> {
                                 goLeftAnim.play();
-                                // NO MATCH, SO BREAK
                             });
 
                             codeAnims.add(Transitions.createHighlighter(keyLess.getRect(), "code", null));
                             codeAnims.add(Transitions.createHighlighter(goLeft.getRect(), "code", null));
                             end = middle - 1;
                         } else {
-                            double distance = start + 1 == inputArray.size() ? indexTextCentres.get(indexTexts.size() - 1) + 5 : indexTextCentres.get(middle + 1) - startPointerShape.getLayoutBounds().getCenterX();
-//                            double distance = indexTextCentres.get(middle + 1) - startPointerShape.getLayoutBounds().getCenterX();
-                            TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
+                            double distance;
                             if (middle + 1 == inputArray.size()) {
-                                /*distance = indexTextCentres.get(indexTexts.size() - 1) + 5;
-                                goRightAnim.setByX(distance);*/
+                                distance = (startPointerWidth * 3);
                                 // NO MATCH, SO BREAK
+                            } else {
+                                distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
                             }
+
+                            TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
                             translateTransitions.add(goRightAnim);
                             checkBlockAnim.setOnFinished(e -> {
                                 goRightAnim.play();
