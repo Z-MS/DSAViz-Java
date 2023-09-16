@@ -57,7 +57,8 @@ public class BinarySearch {
             Group startPointer, midPointer, endPointer;
             Polygon startPointerShape, midPointerShape, endPointerShape;
             Text startPointerLabel, midPointerLabel, endPointerLabel;
-            double startPointerWidth, midPointerWidth, endPointerWidth;
+            double pointerWidth, pointerHeight;
+
             Group mainAreaContainer;
             CodeBlock methodDef, startendDeclaration, whileText, whileCondition, closingParen, divider, keyEquals, matchFound, keyLess, goLeft, elseText, goRight, noMatch;
             VBox algoTracerContainer;
@@ -68,7 +69,7 @@ public class BinarySearch {
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = 16;// RandomGenerator.generateRandomNumber(5, 10);
+                key = RandomGenerator.generateRandomNumber(5, 10);
                 mainAreaContainer = new Group();
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -117,7 +118,7 @@ public class BinarySearch {
                         indexTexts.get(0).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
                 );
 
-                startPointerWidth = startPointerShape.getLayoutBounds().getWidth();
+                pointerWidth = startPointerShape.getLayoutBounds().getWidth();
                 startPointerShape.setFill(Color.BLUE);
                 startPointerLabel = new Text(startPointerShape.getLayoutBounds().getMinX() - 10 , startPointerShape.getLayoutBounds().getMaxY() - 20, "start");
                 startPointerLabel.setFont(new Font("Consolas", 15));
@@ -133,7 +134,6 @@ public class BinarySearch {
                         indexTexts.get(midIndex).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
                 );
 
-                midPointerWidth = midPointerShape.getLayoutBounds().getWidth();
                 midPointerShape.setFill(Color.RED);
                 midPointerLabel = new Text(midPointerShape.getLayoutBounds().getMinX() - 10 , midPointerShape.getLayoutBounds().getMaxY() - 20, "middle");
                 midPointerLabel.setFont(new Font("Consolas", 15));
@@ -151,13 +151,15 @@ public class BinarySearch {
                         indexTexts.get(lastIndex).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
                 );
 
-                endPointerWidth = endPointerShape.getLayoutBounds().getWidth();
                 endPointerShape.setFill(Color.GREEN);
                 endPointerLabel = new Text(endPointerShape.getLayoutBounds().getMinX() - 5 , endPointerShape.getLayoutBounds().getMaxY() - 20, "end");
                 endPointerLabel.setFont(new Font("Consolas", 15));
                 endPointerLabel.setFill(Color.BLACK);
                 endPointer = new Group();
                 endPointer.getChildren().addAll(endPointerShape, endPointerLabel);
+
+                pointerWidth = endPointerShape.getLayoutBounds().getWidth();
+                pointerHeight = endPointer.getLayoutBounds().getHeight();
 
                 mainAreaContainer.getChildren().addAll(keyBlock.getBlock(), keyLabel, startPointer, midPointer, endPointer);
                 mainArea.getChildren().add(mainAreaContainer);
@@ -238,7 +240,12 @@ public class BinarySearch {
                     double distanceFromNewMiddle = indexTextCentres.get(middle) - indexTextCentres.get(oldMiddle);
 
                     if(start != 0 || end != inputArray.size() - 1) {
+                        double yTranslation = 0;
+                        if(middle == end || middle == start) {
+                            yTranslation = -pointerHeight;
+                        }
                         TranslateTransition moveMiddle = Transitions.translateX(midPointer, distanceFromNewMiddle,300);
+                        moveMiddle.setByY(yTranslation);
                         translateTransitions.add(moveMiddle);
                         moveMiddleTransitions.add(moveMiddle);
                     }
@@ -270,15 +277,26 @@ public class BinarySearch {
                     } else {
                         if (inputArray.get(middle).compareTo(key) > 0) {
                             double distance;
+                            double yTranslation = 0;
+                            if(end == start) {
+                                yTranslation = -(pointerHeight);
+                            }
+
                             if (middle - 1 < 0) {
                                 // negating it so the translate X can move left
-                                distance = -(endPointerWidth * 3);
+                                distance = -(pointerWidth * 3);
+                                checkBlockAnim.setToValue(Color.RED);
+                                checkBlockAnim.setCycleCount(1);
 
-                                // MAKE RED AND BREAK
-                            } else {
+                                keyBlockCheckAnim.setToValue(Color.RED);
+                                keyBlockCheckAnim.setCycleCount(1);
+                            }
+                            else {
                                 distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
                             }
+
                             TranslateTransition goLeftAnim = Transitions.translateX(endPointer, distance, 200);
+                            goLeftAnim.setByY(yTranslation);
 
                             translateTransitions.add(goLeftAnim);
                             checkBlockAnim.setOnFinished(e -> {
@@ -290,14 +308,24 @@ public class BinarySearch {
                             end = middle - 1;
                         } else {
                             double distance;
+                            double yTranslation = 0;
+                            if(start + 1 == end) {
+                                yTranslation = -(pointerHeight);
+                            }
+
                             if (middle + 1 == inputArray.size()) {
-                                distance = (startPointerWidth * 3);
-                                // NO MATCH, SO BREAK
+                                distance = (pointerWidth * 3);
+                                checkBlockAnim.setToValue(Color.RED);
+                                checkBlockAnim.setCycleCount(1);
+
+                                keyBlockCheckAnim.setToValue(Color.RED);
+                                keyBlockCheckAnim.setCycleCount(1);
                             } else {
                                 distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
                             }
 
                             TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
+                            goRightAnim.setByY(yTranslation);
                             translateTransitions.add(goRightAnim);
                             checkBlockAnim.setOnFinished(e -> {
                                 goRightAnim.play();
@@ -307,8 +335,11 @@ public class BinarySearch {
                             start = middle + 1;
                         }
                     }
+                    FadeTransition fadeOutMidPointer = Transitions.fadeItemOut(midPointer);
+                    fadeTransitions.add(fadeOutMidPointer);
                     codeAnims.add(Transitions.createHighlighter(whileCondition.getRect(), "code", null));
                 }
+
                 codeAnims.add(Transitions.createHighlighter(noMatch.getRect(), "code", null));
                 return -1;
             }

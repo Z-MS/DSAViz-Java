@@ -20,7 +20,7 @@ public class Transitions {
         if(duration != null) {
             ft.setDuration(Duration.millis(duration));
         } else {
-            ft.setDuration(Duration.millis(150));
+            ft.setDuration(Duration.millis(500));
         }
         ft.setAutoReverse(true);
         ft.setCycleCount(2);
