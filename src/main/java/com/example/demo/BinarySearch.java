@@ -21,10 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 public class BinarySearch {
     private Scene scene;
@@ -69,7 +66,7 @@ public class BinarySearch {
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = RandomGenerator.generateRandomNumber(5, 10);
+                key = 16;//RandomGenerator.generateRandomNumber(5, 10);
                 mainAreaContainer = new Group();
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -226,23 +223,47 @@ public class BinarySearch {
                 FillTransition whileConditionAnim = Transitions.createHighlighter(whileCondition.getRect(), "code", null);
                 codeAnims.add(whileConditionAnim);
 
-                FadeTransition fadeInMidPointer = Transitions.fadeItemIn(midPointer);
+                FadeTransition fadeMidPointer = Transitions.fadeItemIn(midPointer);
                 // we're multiplying by 2 because the CodeBlock animations have a cycle count of 2. In other words, they take twice the time of their specified duration to complete
-                fadeInMidPointer.setDelay(whileConditionAnim.getDuration().multiply(2));
-                fadeTransitions.add(fadeInMidPointer);
+                fadeMidPointer.setDelay(whileConditionAnim.getDuration().multiply(2));
+                fadeTransitions.add(fadeMidPointer);
+
+                String startPointerLevel = "BOTTOM";
+                String midPointerLevel = "BOTTOM";
+                String endPointerLevel = "BOTTOM";
 
                 while (start <= end) {
                     FillTransition dividerAnim = Transitions.createHighlighter(divider.getRect(), "code", null);
                     codeAnims.add(dividerAnim);
 
                     int oldMiddle = middle;
+                    String oldMiddleLevel = midPointerLevel;
                     middle = (start + end) / 2;
                     double distanceFromNewMiddle = indexTextCentres.get(middle) - indexTextCentres.get(oldMiddle);
 
                     if(start != 0 || end != inputArray.size() - 1) {
-                        double yTranslation = 0;
-                        if(middle == end || middle == start) {
-                            yTranslation = -pointerHeight;
+                        double yTranslation;
+                        double levelDistance = 0;
+                        if(middle == end && middle == start) {
+                            // from centre to top, or bottom to top
+                            levelDistance = oldMiddleLevel.equals("CENTRE") ? -(pointerHeight)  : -(pointerHeight * 2);
+                            midPointerLevel = "TOP";
+                            yTranslation = levelDistance;
+                        } else if(middle == end || middle == start) {
+                            // from bottom to centre
+                            midPointerLevel = "CENTRE";
+                            yTranslation = -(pointerHeight);
+                        } else {
+                            if(oldMiddleLevel.equals("TOP")) {
+                                // go down two levels
+                                yTranslation = pointerHeight * 2;
+                            } else if (oldMiddleLevel.equals("CENTRE")){
+                                // go down one level
+                                yTranslation = pointerHeight;
+                            } else {
+                                yTranslation = 0;
+                            }
+                            midPointerLevel = "BOTTOM";
                         }
                         TranslateTransition moveMiddle = Transitions.translateX(midPointer, distanceFromNewMiddle,300);
                         moveMiddle.setByY(yTranslation);
@@ -278,8 +299,15 @@ public class BinarySearch {
                         if (inputArray.get(middle).compareTo(key) > 0) {
                             double distance;
                             double yTranslation = 0;
-                            if(end == start) {
+                            // the only time it's ever going to be at the centre is if it has crossed the start pointer
+                            if (endPointerLevel.equals("CENTRE")) {
+                                yTranslation = pointerHeight;
+                                endPointerLevel = "BOTTOM";
+                            }
+                            // move pointer up if start and end are(going to be) equal
+                            if(end - 1 == start || middle - 1 == start) {
                                 yTranslation = -(pointerHeight);
+                                endPointerLevel = "CENTRE";
                             }
 
                             if (middle - 1 < 0) {
@@ -309,8 +337,15 @@ public class BinarySearch {
                         } else {
                             double distance;
                             double yTranslation = 0;
-                            if(start + 1 == end) {
+                            // the only time it's ever going to be at the centre is if it has crossed the end pointer
+                            if(startPointerLevel.equals("CENTRE")) {
+                                yTranslation = pointerHeight;
+                                startPointerLevel = "BOTTOM";
+                            }
+                            // move pointer up if start and end are(going to be) equal
+                            if(start + 1 == end || middle + 1 == end) {
                                 yTranslation = -(pointerHeight);
+                                startPointerLevel = "CENTRE";
                             }
 
                             if (middle + 1 == inputArray.size()) {
