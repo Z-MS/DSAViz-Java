@@ -42,7 +42,7 @@ public class BinarySearch {
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
             ArrayList <FillTransition> codeAnims = new ArrayList<>();
             ArrayList <TranslateTransition> translateTransitions = new ArrayList<>();
-
+            // special case transitions
             ArrayList<TranslateTransition> moveMiddleTransitions = new ArrayList<>();
             ArrayList<FadeTransition> fadeTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
@@ -62,11 +62,11 @@ public class BinarySearch {
             TitledPane titledPane;
 
             void initMainArea() {
-                inputArray = RandomGenerator.generateRandomNumbers(5, 15, 10);
+                inputArray = RandomGenerator.generateRandomNumbers(5, 20, 10);
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = 16;//RandomGenerator.generateRandomNumber(5, 10);
+                key = 5;//RandomGenerator.generateRandomNumber(5, 10);
                 mainAreaContainer = new Group();
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -265,6 +265,8 @@ public class BinarySearch {
                             }
                             midPointerLevel = "BOTTOM";
                         }
+                        fadeMidPointer = Transitions.fadeItemIn(midPointer);
+                        fadeTransitions.add(fadeMidPointer);
                         TranslateTransition moveMiddle = Transitions.translateX(midPointer, distanceFromNewMiddle,300);
                         moveMiddle.setByY(yTranslation);
                         translateTransitions.add(moveMiddle);
@@ -296,43 +298,68 @@ public class BinarySearch {
                         this.setIndex(middle);
                         return middle;
                     } else {
+                        FillTransition nextWhileAnim = Transitions.createHighlighter(whileCondition.getRect(), "code", null);
+
                         if (inputArray.get(middle).compareTo(key) > 0) {
                             double distance;
                             double yTranslation = 0;
-                            // the only time it's ever going to be at the centre is if it has crossed the start pointer
+                            // the only time it's ever going to be at the centre is if it was equal to the start pointer
                             if (endPointerLevel.equals("CENTRE")) {
                                 yTranslation = pointerHeight;
                                 endPointerLevel = "BOTTOM";
                             }
                             // move pointer up if start and end are(going to be) equal
-                            if(end - 1 == start || middle - 1 == start) {
+                            if(end - 1 == start || middle - 1 == 0) {
                                 yTranslation = -(pointerHeight);
                                 endPointerLevel = "CENTRE";
                             }
 
-                            if (middle - 1 < 0) {
-                                // negating it so the translate X can move left
-                                distance = -(pointerWidth * 3);
+                            // IF end - 1 < start, a.k.a No Match was found.
+                            if(end - 1 < start) {
+                                fadeMidPointer = null;
+                                // if it passes the left edge
+                                if (middle - 1 < 0) {
+                                    // negating it so the translate X can move left
+                                    distance = -(pointerWidth * 3);
+                                } else {
+                                    distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
+                                }
+
                                 checkBlockAnim.setToValue(Color.RED);
                                 checkBlockAnim.setCycleCount(1);
 
                                 keyBlockCheckAnim.setToValue(Color.RED);
                                 keyBlockCheckAnim.setCycleCount(1);
-                            }
-                            else {
+                            } else {
+                                // search continues
                                 distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
+                                fadeMidPointer = Transitions.fadeItemOut(midPointer);
+                                fadeTransitions.add(fadeMidPointer);
                             }
 
                             TranslateTransition goLeftAnim = Transitions.translateX(endPointer, distance, 200);
                             goLeftAnim.setByY(yTranslation);
 
                             translateTransitions.add(goLeftAnim);
-                            checkBlockAnim.setOnFinished(e -> {
+                            FadeTransition finalFadeMidPointer1 = fadeMidPointer;
+
+                            FillTransition keyLessAnim = Transitions.createHighlighter(keyLess.getRect(), "code", null);
+                            FillTransition goLeftCodeAnim = Transitions.createHighlighter(goLeft.getRect(), "code", null);
+                            codeAnims.add(keyLessAnim);
+                            codeAnims.add(goLeftCodeAnim);
+                            codeAnims.add(nextWhileAnim);
+
+                            keyLessAnim.setOnFinished(e -> {
+                                goLeftCodeAnim.play();
                                 goLeftAnim.play();
+                                if(finalFadeMidPointer1 != null) {
+                                    finalFadeMidPointer1.play();
+                                }
                             });
 
-                            codeAnims.add(Transitions.createHighlighter(keyLess.getRect(), "code", null));
-                            codeAnims.add(Transitions.createHighlighter(goLeft.getRect(), "code", null));
+                            checkBlockAnim.setOnFinished(e -> {
+                                keyLessAnim.play();
+                            });
                             end = middle - 1;
                         } else {
                             double distance;
@@ -348,8 +375,14 @@ public class BinarySearch {
                                 startPointerLevel = "CENTRE";
                             }
 
-                            if (middle + 1 == inputArray.size()) {
-                                distance = (pointerWidth * 3);
+                            // IF start + 1 > end should be the main condition. Then the edge stuff should be inside
+                            if(start + 1 > end) {
+                                fadeMidPointer = null;
+                                if (middle + 1 == inputArray.size()) {
+                                    distance = (pointerWidth * 3);
+                                } else {
+                                    distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
+                                }
                                 checkBlockAnim.setToValue(Color.RED);
                                 checkBlockAnim.setCycleCount(1);
 
@@ -357,22 +390,34 @@ public class BinarySearch {
                                 keyBlockCheckAnim.setCycleCount(1);
                             } else {
                                 distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
+                                fadeMidPointer = Transitions.fadeItemOut(midPointer);
+                                fadeTransitions.add(fadeMidPointer);
                             }
+
 
                             TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
                             goRightAnim.setByY(yTranslation);
                             translateTransitions.add(goRightAnim);
+                            FadeTransition finalFadeMidPointer = fadeMidPointer;
+                            FillTransition goRightCodeAnim = Transitions.createHighlighter(goRight.getRect(), "code", null);
+                            codeAnims.add(goRightCodeAnim);
+                            codeAnims.add(nextWhileAnim);
+
                             checkBlockAnim.setOnFinished(e -> {
                                 goRightAnim.play();
+                                goRightCodeAnim.play();
                             });
 
-                            codeAnims.add(Transitions.createHighlighter(goRight.getRect(), "code", null));
+                            goRightCodeAnim.setOnFinished(e-> {
+                                nextWhileAnim.play();
+                                if(finalFadeMidPointer != null) {
+                                    finalFadeMidPointer.play();
+                                }
+                            });
+
                             start = middle + 1;
                         }
                     }
-                    FadeTransition fadeOutMidPointer = Transitions.fadeItemOut(midPointer);
-                    fadeTransitions.add(fadeOutMidPointer);
-                    codeAnims.add(Transitions.createHighlighter(whileCondition.getRect(), "code", null));
                 }
 
                 codeAnims.add(Transitions.createHighlighter(noMatch.getRect(), "code", null));
@@ -395,9 +440,17 @@ public class BinarySearch {
                         // The first while codeblock animation is supposed to play the midPointer fade-in animation
                         if((moveMiddleSize != 0) && (moveMiddleArrayCounter != moveMiddleSize) && (count != 0)) {
                             FillTransition nextCodeAnim = codeAnims.get(count + 1);
+                            // add Fade In anims - moveMiddle size and the number of fadeIn transitions to add are always equal
+                            int[] fadeInAnims = new int[moveMiddleSize];
+                            for(int i = 1; i < fadeTransitions.size(); i++) {
+                                if(fadeTransitions.get(i).getToValue() == 1) {
+                                    fadeInAnims[0] = i;
+                                }
+                            }
                             currentAnim.setOnFinished(e -> {
-                                moveMiddleTransitions.get(finalMoveMiddleArrayCounter).play();
                                 nextCodeAnim.play();
+                                fadeTransitions.get(fadeInAnims[finalMoveMiddleArrayCounter]).play();
+                                moveMiddleTransitions.get(finalMoveMiddleArrayCounter).play();
                             });
                             moveMiddleArrayCounter++;
                         } else {
