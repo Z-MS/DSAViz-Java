@@ -66,7 +66,7 @@ public class BinarySearch {
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = 5;//RandomGenerator.generateRandomNumber(5, 10);
+                key = RandomGenerator.generateRandomNumber(5, 10);
                 mainAreaContainer = new Group();
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -324,12 +324,6 @@ public class BinarySearch {
                                 } else {
                                     distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
                                 }
-
-                                checkBlockAnim.setToValue(Color.RED);
-                                checkBlockAnim.setCycleCount(1);
-
-                                keyBlockCheckAnim.setToValue(Color.RED);
-                                keyBlockCheckAnim.setCycleCount(1);
                             } else {
                                 // search continues
                                 distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
@@ -383,11 +377,7 @@ public class BinarySearch {
                                 } else {
                                     distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
                                 }
-                                checkBlockAnim.setToValue(Color.RED);
-                                checkBlockAnim.setCycleCount(1);
 
-                                keyBlockCheckAnim.setToValue(Color.RED);
-                                keyBlockCheckAnim.setCycleCount(1);
                             } else {
                                 distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
                                 fadeMidPointer = Transitions.fadeItemOut(midPointer);
@@ -427,6 +417,7 @@ public class BinarySearch {
             public void handleOnFinished() {
                 int moveMiddleSize = moveMiddleTransitions.size();
                 int moveMiddleArrayCounter = 0;
+                // we're not looping through the whole codeAnim array because the last while codeAnim will handle the RED match-not-found char block animation
                 for(int count = 0; count < codeAnims.size() - 1; count++) {
                     FillTransition currentAnim = codeAnims.get(count);
                     FillTransition nextAnim = codeAnims.get(count + 1);
@@ -441,15 +432,15 @@ public class BinarySearch {
                         if((moveMiddleSize != 0) && (moveMiddleArrayCounter != moveMiddleSize) && (count != 0)) {
                             FillTransition nextCodeAnim = codeAnims.get(count + 1);
                             // add Fade In anims - moveMiddle size and the number of fadeIn transitions to add are always equal
-                            int[] fadeInAnims = new int[moveMiddleSize];
+                            ArrayList<Integer> fadeInAnims = new ArrayList<>();
                             for(int i = 1; i < fadeTransitions.size(); i++) {
                                 if(fadeTransitions.get(i).getToValue() == 1) {
-                                    fadeInAnims[0] = i;
+                                    fadeInAnims.add(i);
                                 }
                             }
                             currentAnim.setOnFinished(e -> {
                                 nextCodeAnim.play();
-                                fadeTransitions.get(fadeInAnims[finalMoveMiddleArrayCounter]).play();
+                                fadeTransitions.get(fadeInAnims.get(finalMoveMiddleArrayCounter)).play();
                                 moveMiddleTransitions.get(finalMoveMiddleArrayCounter).play();
                             });
                             moveMiddleArrayCounter++;
@@ -465,6 +456,29 @@ public class BinarySearch {
                         // repeating for semantic
                         currentAnim.setOnFinished(e -> nextAnim.play());
                     }
+                }
+
+                // handle Match-Not-Found animations
+                if(this.getIndex() == -1) {
+                    FillTransition lastWhileAnim = codeAnims.get(codeAnims.size() - 2);
+                    // get the last code animation
+                    FillTransition noMatchCodeAnim = codeAnims.get(codeAnims.size() - 1);
+                    // create new char block anims: the key block and all block so we can paint all the blocks red
+                    FillTransition keyBlockNoMatchAnim = Transitions.createHighlighter(keyBlock.getRect(), "char", null);
+                    keyBlockNoMatchAnim.setToValue(Color.RED);
+                    keyBlockNoMatchAnim.setCycleCount(1);
+
+                    lastWhileAnim.setOnFinished(e -> {
+                        keyBlockNoMatchAnim.play();
+                        noMatchCodeAnim.play();
+                        // get all code blocks and animate their colours to RED
+                        for(int i = 0; i < charBlocks.length; i++) {
+                            FillTransition elementBlockNoMatchAnim = Transitions.createHighlighter(charBlocks[i].getRect(), "char", null);
+                            elementBlockNoMatchAnim.setToValue(Color.RED);
+                            elementBlockNoMatchAnim.setCycleCount(1);
+                            elementBlockNoMatchAnim.play();
+                        }
+                    });
                 }
             }
 
