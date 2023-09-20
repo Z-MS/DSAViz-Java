@@ -2,12 +2,17 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
+import com.example.demo.components.PlayingQueue;
 import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
-import javafx.animation.*;
+import com.example.demo.utils.Transitions;
+import javafx.animation.Animation;
+import javafx.animation.FillTransition;
+import javafx.animation.Transition;
+import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -16,14 +21,13 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Queue;
 
 
 public class LinearSearch {
@@ -46,13 +50,18 @@ public class LinearSearch {
 
         class Visualise {
             int index = -1;
-            ArrayList<Comparable> inputArray;
-            Comparable key;
+            Slider speedSlider;
+            boolean resetFlag = false;
+            ArrayList<Comparable> inputArray = new ArrayList<>();
+            Comparable key = null;
             CharBlock[] charBlocks;
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
+            ArrayList<Text> indexTexts = new ArrayList<>();
+            ArrayList<Double> indexTextCentres = new ArrayList<>();
             ArrayList <FillTransition> codeAnims = new ArrayList<>();
-            ArrayList <Transition> translateTransitions = new ArrayList<>();
+            ArrayList <TranslateTransition> translateTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
+            Queue<Transition> playingQueue = new PlayingQueue().getPlayingQueue();
             CharBlock keyBlock;
             Polygon pointer;
             double pointerWidth;
@@ -62,11 +71,13 @@ public class LinearSearch {
             VBox algoTracerContainer;
             Group mainAreaContainer;
             TitledPane titledPane;
+            final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
+            final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = RandomGenerator.generateRandomCharacters( 10);
+                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomCharacters( 10) : inputArray;
                 charBlocks = new CharBlock[inputArray.size()];
-                key = RandomGenerator.generateRandomCharacter();
+                key = key == null || !resetFlag ? RandomGenerator.generateRandomCharacter() : key;
                 mainAreaContainer = new Group();
                 int blockIndent = 60;
 
@@ -82,10 +93,16 @@ public class LinearSearch {
                     indexText.setFill(Color.ROSYBROWN);
                     indexText.setX(rect.getLayoutBounds().getCenterX() - indexText.getLayoutBounds().getCenterX());
                     indexText.setY(rect.getLayoutBounds().getMaxY() + 30);
+                    indexTexts.add(indexText);
 
                     charBlocks[c] = charBlock;
 
                     mainAreaContainer.getChildren().addAll(charBlock.getBlock(),indexText);
+                }
+
+                for(Text indexText: indexTexts) {
+                    Bounds bounds = indexText.localToScene(indexText.getBoundsInLocal());
+                    indexTextCentres.add(bounds.getCenterX());
                 }
 
                 int middleBlockIndex = (int) Math.floor(charBlocks.length / 2);
@@ -156,10 +173,8 @@ public class LinearSearch {
 
                 algoTracerContainer = new VBox();
                 algoTracerContainer.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
-                final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
-
                 algoTracerContainer.setLayoutX(indentX);
-                algoTracerContainer.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
+                algoTracerContainer.setLayoutY(indentY);
 
                 algoTracerContainer.getChildren().add(titledPane);
                 algoTracer.getChildren().add(algoTracerContainer);
@@ -169,25 +184,30 @@ public class LinearSearch {
 
             int search() {
                 // must run once
-                codeAnims.add(createHighlighter(indexText.getRect(), Color.INDIGO, Color.BLACK));
-                codeAnims.add(createHighlighter(init.getRect(), Color.INDIGO, Color.BLACK));
+                codeAnims.add(Transitions.createHighlighter(indexText.getRect(), "code", null));
+                codeAnims.add(Transitions.createHighlighter(init.getRect(), "code", null));
                 // must run at least once
-                FillTransition counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
+                FillTransition counterCompAnim = Transitions.createHighlighter(counterComp.getRect(), "code", null);
                 codeAnims.add(counterCompAnim);
 
                 for(int i = 0; i < inputArray.size(); i++) {
-                    FillTransition keyCompAnim = createHighlighter(keyComp.getRect(), Color.INDIGO, Color.BLACK);
+                    FillTransition keyCompAnim = Transitions.createHighlighter(keyComp.getRect(), "code", null);
                     codeAnims.add(keyCompAnim);
 
-                    FillTransition charBlockAnim = createHighlighter(charBlocks[i].getRect(), Color.ORANGE, Color.RED);
+                    FillTransition charBlockAnim = Transitions.createHighlighter(charBlocks[i].getRect(), "char", null);
                     charBlockAnims.add(charBlockAnim);
 
-                    FillTransition keyFillAnim = createHighlighter(keyBlock.getRect(), Color.ORANGE, Color.RED);
+                    FillTransition keyFillAnim = Transitions.createHighlighter(keyBlock.getRect(), "char", null);
+                    charBlockAnims.add(keyFillAnim);
 
                     counterCompAnim.setOnFinished(e -> {
+                        playingQueue.poll();
                         keyFillAnim.play();
+                        playingQueue.add(keyFillAnim);
                         keyCompAnim.play();
+                        playingQueue.add(keyCompAnim);
                         charBlockAnim.play();
+                        playingQueue.add(charBlockAnim);
                     });
 
                     if(inputArray.get(i) == key) {
@@ -197,36 +217,35 @@ public class LinearSearch {
                         charBlockAnim.setToValue(Color.LAWNGREEN);
                         charBlockAnim.setCycleCount(1);
 
-                        codeAnims.add(createHighlighter(matchFound.getRect(), Color.INDIGO, Color.BLACK));
-                        codeAnims.add(createHighlighter(breakText.getRect(), Color.INDIGO, Color.BLACK));
+                        codeAnims.add(Transitions.createHighlighter(matchFound.getRect(), "code", null));
+                        codeAnims.add(Transitions.createHighlighter(breakText.getRect(), "code", null));
                         this.setIndex(i);
                         break;
                     }
                     // if it reaches here, it means it didn't find a match
+                    double distance;
 
                     // if this is the last element, this means we haven't found a match and we shouldn't create any new translation animations
                     if(i + 1 == inputArray.size()) {
-                        keyFillAnim.setToValue(Color.RED);
-                        keyFillAnim.setCycleCount(1);
-
-                        charBlockAnim.setToValue(Color.RED);
-                        charBlockAnim.setCycleCount(1);
-
-                        break;
+                        distance = pointerWidth * 3;
+                    } else {
+                        distance = indexTextCentres.get(i + 1) - indexTextCentres.get(i);
                     }
 
-                    TranslateTransition movePointer = translateX(pointer, charBlocks[i].getBlockText().getX() - pointerWidth, charBlocks[i+1].getBlockText().getX() - pointerWidth, 500);
+                    TranslateTransition movePointer = Transitions.translateX(pointer, distance, null);
                     translateTransitions.add(movePointer);
 
                     charBlockAnim.setOnFinished(e -> {
+                        playingQueue.poll();
                         movePointer.play();
+                        playingQueue.add(movePointer);
                     });
-                    codeAnims.add(createHighlighter(increment.getRect(), Color.INDIGO, Color.BLACK));
-                    counterCompAnim = createHighlighter(counterComp.getRect(), Color.INDIGO, Color.BLACK);
+                    codeAnims.add(Transitions.createHighlighter(increment.getRect(), "code", null));
+                    counterCompAnim = Transitions.createHighlighter(counterComp.getRect(), "code", null);
                     codeAnims.add(counterCompAnim);
                 }
                 // must return something at the end of the loop, whether it broke out or not
-                codeAnims.add(createHighlighter(returnText.getRect(), Color.INDIGO, Color.BLACK));
+                codeAnims.add(Transitions.createHighlighter(returnText.getRect(), "code", null));
                 return index;
             }
 
@@ -237,18 +256,75 @@ public class LinearSearch {
                         continue;
                     }
                     FillTransition nextAnim = codeAnims.get(count + 1);
-                    currentAnim.setOnFinished(e -> nextAnim.play());
+                    currentAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        nextAnim.play();
+                        playingQueue.add(nextAnim);
+                    });
+                }
+
+                // Handle translation animations
+                for(TranslateTransition tt: translateTransitions) {
+                    if(tt.getOnFinished() == null) {
+                        tt.setOnFinished(e -> playingQueue.poll());
+                    }
+                }
+
+                // Handle Match-not-found animations
+                if(this.getIndex() == -1) {
+                    FillTransition lastIfAnim = codeAnims.get(codeAnims.size() - 2);
+                    // get the last code animation
+                    FillTransition returnAnim = codeAnims.get(codeAnims.size() - 1);
+                    // create new char block anims: the key block and all block so we can paint all the blocks red
+                    FillTransition keyBlockNoMatchAnim = Transitions.createHighlighter(keyBlock.getRect(), "char", null);
+                    keyBlockNoMatchAnim.setToValue(Color.RED);
+                    keyBlockNoMatchAnim.setCycleCount(1);
+
+                    lastIfAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        keyBlockNoMatchAnim.play();
+                        playingQueue.add(keyBlockNoMatchAnim);
+                        returnAnim.play();
+                        playingQueue.add(returnAnim);
+                        // get all code blocks and animate their colours to RED
+                        for(int i = 0; i < charBlocks.length; i++) {
+                            FillTransition elementBlockNoMatchAnim = Transitions.createHighlighter(charBlocks[i].getRect(), "char", null);
+                            elementBlockNoMatchAnim.setToValue(Color.RED);
+                            elementBlockNoMatchAnim.setCycleCount(1);
+                            charBlockAnims.add(elementBlockNoMatchAnim);
+                            elementBlockNoMatchAnim.play();
+                            playingQueue.add(elementBlockNoMatchAnim);
+                        }
+                    });
+                }
+
+                // Handle char block anims removal from playing queue
+                for(FillTransition ft: charBlockAnims) {
+                    if(ft.getOnFinished() == null) {
+                        ft.setOnFinished(e -> playingQueue.poll());
+                    }
+                }
+
+            }
+
+            public void setAllAnimations() {
+                allAnimations.addAll(translateTransitions);
+                allAnimations.addAll(codeAnims);
+                allAnimations.addAll(charBlockAnims);
+            }
+
+            private void setAllAnimationsSpeed() {
+                double speedFactor = speedSlider.valueProperty().doubleValue();
+                for (Transition animation : allAnimations) {
+                    animation.setRate(speedFactor);
                 }
             }
 
             void initControls() {
-                Slider speedSlider = new SpeedSlider().getSpeedSlider();
+                speedSlider = new SpeedSlider().getSpeedSlider();
                 speedSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
                     double speedFactor = Math.abs(newValue.doubleValue());
 
-                    allAnimations.addAll(translateTransitions);
-                    allAnimations.addAll(codeAnims);
-                    allAnimations.addAll(charBlockAnims);
                     for (Transition animation : allAnimations) {
                         animation.setRate(speedFactor);
                     }
@@ -256,47 +332,53 @@ public class LinearSearch {
 
                 controls.getChildren().add(speedSlider);
             }
-            public void generateNew() {
+
+            private void clear() {
                 algoTracerContainer.getChildren().remove(titledPane);
                 mainArea.getChildren().remove(mainAreaContainer);
+
+                for(Transition transition: playingQueue) {
+                    if(transition.getStatus().equals(Animation.Status.RUNNING)) {
+                        transition.stop();
+                    }
+                }
 
                 translateTransitions.clear();
                 codeAnims.clear();
                 charBlockAnims.clear();
 
+                // reset all Char block colours
+                keyBlock.getRect().setFill(Color.ORANGE);
+                for (CharBlock charBlock : charBlocks) {
+                    charBlock.getRect().setFill(Color.ORANGE);
+                }
+            }
+            public void generateNew() {
+                clear();
+
                 this.setIndex(-1);
+                this.resetFlag = false;
                 this.initMainArea();
                 this.initAlgoTracer();
                 this.search();
                 this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
                 this.start();
                 // generate new chars and change the codeblock text value
             }
 
             void reset() {
-                // translate the key block and key label back to the position of the first element, then start the codeAnimation
-                pointer.setTranslateX(charBlocks[0].getBlockText().getLayoutBounds().getMinX() - pointerWidth);
+                clear();
 
-                /*ArrayList<Transition> transitions = new ArrayList<>();
-                transitions.addAll(translateTransitions);
-                transitions.addAll(codeAnim);
-                transitions.addAll(charBlockAnims);*/
-                for (Transition animation : allAnimations) {
-                    animation.stop();
-                }
-
-                if(this.getIndex() != -1) {
-                    // reset key block and matched block colours
-                    CharBlock matchedBlock = (CharBlock) Array.get(charBlocks, this.getIndex());
-                    keyBlock.getRect().setFill(Color.ORANGE);
-                    matchedBlock.getRect().setFill(Color.ORANGE);
-                } else {
-                    CharBlock lastUnmatchedBlock = (CharBlock) Array.get(charBlocks, charBlocks.length - 1);
-                    keyBlock.getRect().setFill(Color.ORANGE);
-                    lastUnmatchedBlock.getRect().setFill(Color.ORANGE);
-                }
-
-                codeAnims.get(0).play();
+                this.resetFlag = true;
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.search();
+                this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
+                this.start();
             }
 
             void start() {
@@ -317,6 +399,7 @@ public class LinearSearch {
         linearSearchVis.initAlgoTracer();
         linearSearchVis.search();
         linearSearchVis.handleOnFinished();
+        linearSearchVis.setAllAnimations();
         linearSearchVis.initControls();
         linearSearchVis.start();
 
@@ -338,50 +421,10 @@ public class LinearSearch {
         // position controls
         controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
         pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);
-/*
-        stage.setScene(scene);
-        stage.show();*/
+
     }
 
     public Scene getScene() {
         return scene;
     }
-
-    static FillTransition createHighlighter(Shape node, Color startColor, Color endColor) {
-        FillTransition ft = new FillTransition();
-        ft.setShape(node);
-        ft.setFromValue(startColor);
-        ft.setToValue(endColor);
-        ft.setInterpolator(Interpolator.EASE_IN);
-        ft.setDuration(Duration.millis(200));
-        ft.setAutoReverse(true);
-        ft.setCycleCount(2);
-        return ft;
-    }
-
-    static ScaleTransition scaleBlock(Shape block, int duration) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(duration), block);
-        st.fromZProperty();
-        return st;
-    }
-
-    static TranslateTransition translateX(Node node, double start, double end, double duration) {
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
-        translateTransition.setFromX(start);
-        translateTransition.setToX(end);
-        translateTransition.setCycleCount(1);
-
-        return translateTransition;
-    }
-
-    static TranslateTransition translateY(Node node, double start, double end, double duration) {
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
-        translateTransition.setFromY(start);
-        translateTransition.setToY(end);
-        translateTransition.setCycleCount(1);
-
-        return translateTransition;
-    }
-
-
 }

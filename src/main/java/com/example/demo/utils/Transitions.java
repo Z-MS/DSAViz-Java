@@ -11,6 +11,9 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 public class Transitions {
+    private static final Duration defaultTranslationDuration = Duration.millis(300);
+    private static final Duration defaultFillDuration = Duration.millis(400);
+
     public static FillTransition createHighlighter(Shape node, Color startColor, Color endColor, Integer duration) {
         FillTransition ft = new FillTransition();
         ft.setShape(node);
@@ -20,7 +23,7 @@ public class Transitions {
         if(duration != null) {
             ft.setDuration(Duration.millis(duration));
         } else {
-            ft.setDuration(Duration.millis(500));
+            ft.setDuration(defaultFillDuration);
         }
         ft.setAutoReverse(true);
         ft.setCycleCount(2);
@@ -34,7 +37,7 @@ public class Transitions {
             return createHighlighter(node, Color.ORANGE, Color.RED, duration);
         }
     }
-    public static TranslateTransition translateX(Node node, double start, double end, double duration) {
+    public static TranslateTransition translateX(Node node, double start, double end, Integer duration) {
         TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
         translateTransition.setFromX(start);
         translateTransition.setToX(end);
@@ -43,8 +46,14 @@ public class Transitions {
         return translateTransition;
     }
 
-    public static TranslateTransition translateX(Node node, double distance, double duration) {
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(duration), node);
+    public static TranslateTransition translateX(Node node, double distance, Integer duration) {
+        TranslateTransition translateTransition = new TranslateTransition();
+        translateTransition.setNode(node);
+        if(duration != null) {
+            translateTransition.setDuration(Duration.millis(duration));
+        } else {
+            translateTransition.setDuration(defaultTranslationDuration);
+        }
         translateTransition.setByX(distance);
         translateTransition.setCycleCount(1);
 

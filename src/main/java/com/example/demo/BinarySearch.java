@@ -2,17 +2,17 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
+import com.example.demo.components.PlayingQueue;
+import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
 import com.example.demo.utils.Transitions;
-import javafx.animation.FadeTransition;
-import javafx.animation.FillTransition;
-import javafx.animation.Transition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -20,6 +20,9 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+
+import java.lang.reflect.Array;
 
 import java.util.*;
 
@@ -34,10 +37,16 @@ public class BinarySearch {
         final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
         mainArea.setLayoutX(20);
         mainArea.setLayoutY(20);
+        HBox controls = new HBox();
+
+
         class Visualiser {
             int index = -1;
-            ArrayList<Comparable> inputArray;
-            Comparable key;
+
+            Slider speedSlider;
+            boolean resetFlag = false;
+            ArrayList<Comparable> inputArray = new ArrayList<>();
+            Comparable key = null;
 
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
             ArrayList <FillTransition> codeAnims = new ArrayList<>();
@@ -47,6 +56,7 @@ public class BinarySearch {
             ArrayList<FadeTransition> fadeTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
 
+            Queue<Transition> playingQueue = new PlayingQueue().getPlayingQueue();
             ArrayList<Text> indexTexts = new ArrayList<>();
             ArrayList<Double> indexTextCentres = new ArrayList<>();
             CharBlock[] charBlocks;
@@ -54,19 +64,22 @@ public class BinarySearch {
             Group startPointer, midPointer, endPointer;
             Polygon startPointerShape, midPointerShape, endPointerShape;
             Text startPointerLabel, midPointerLabel, endPointerLabel;
+            double initialStartPointerX, initialMidPointerX, initialEndPointerX;
             double pointerWidth, pointerHeight;
 
             Group mainAreaContainer;
             CodeBlock methodDef, startendDeclaration, whileText, whileCondition, closingParen, divider, keyEquals, matchFound, keyLess, goLeft, elseText, goRight, noMatch;
             VBox algoTracerContainer;
             TitledPane titledPane;
+            final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
+            final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = RandomGenerator.generateRandomNumbers(5, 20, 10);
+                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 20, 10) : inputArray;
                 Collections.sort(inputArray);
 
                 charBlocks = new CharBlock[inputArray.size()];
-                key = RandomGenerator.generateRandomNumber(5, 10);
+                key = key == null || !resetFlag ? RandomGenerator.generateRandomNumber(5, 15) : key;
                 mainAreaContainer = new Group();
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -122,6 +135,8 @@ public class BinarySearch {
                 startPointerLabel.setFill(Color.BLACK);
                 startPointer = new Group();
                 startPointer.getChildren().addAll(startPointerShape, startPointerLabel);
+                initialStartPointerX = startPointer.localToScene(startPointer.getBoundsInLocal()).getMinX();
+
 
                 midPointerShape = new Polygon();
                 int midIndex = (charBlocks.length - 1)/2;
@@ -139,6 +154,7 @@ public class BinarySearch {
                 midPointer.getChildren().addAll(midPointerShape, midPointerLabel);
                 midPointer.setOpacity(0);
                 midPointer.setId("midPointer");
+                initialMidPointerX = startPointer.localToScene(midPointer.getBoundsInLocal()).getMinX();
 
                 endPointerShape = new Polygon();
                 int lastIndex = charBlocks.length - 1;
@@ -154,6 +170,7 @@ public class BinarySearch {
                 endPointerLabel.setFill(Color.BLACK);
                 endPointer = new Group();
                 endPointer.getChildren().addAll(endPointerShape, endPointerLabel);
+                initialEndPointerX = endPointer.localToScene(endPointer.getBoundsInLocal()).getMinX();
 
                 pointerWidth = endPointerShape.getLayoutBounds().getWidth();
                 pointerHeight = endPointer.getLayoutBounds().getHeight();
@@ -208,10 +225,9 @@ public class BinarySearch {
 
                 algoTracerContainer = new VBox();
                 algoTracerContainer.setPrefWidth(pane.getLayoutBounds().getWidth()/2);
-                final int indentX = (int) pane.getLayoutBounds().getCenterX() + 250;
 
                 algoTracerContainer.setLayoutX(indentX);
-                algoTracerContainer.setLayoutY((pane.getLayoutBounds().getCenterY()) - 50);
+                algoTracerContainer.setLayoutY(indentY);
 
                 algoTracerContainer.getChildren().add(titledPane);
                 algoTracer.getChildren().add(algoTracerContainer);
@@ -282,9 +298,13 @@ public class BinarySearch {
                     FillTransition keyBlockCheckAnim = Transitions.createHighlighter(keyBlock.getRect(), "char", null);
 
                     dividerAnim.setOnFinished(e -> {
+                        playingQueue.poll();
                         keyEqualsAnim.play();
+                        playingQueue.add(keyEqualsAnim);
                         keyBlockCheckAnim.play();
+                        playingQueue.add(keyBlockCheckAnim);
                         checkBlockAnim.play();
+                        playingQueue.add(keyBlockCheckAnim);
                     });
 
                     if(inputArray.get(middle) == key) {
@@ -344,15 +364,21 @@ public class BinarySearch {
                             codeAnims.add(nextWhileAnim);
 
                             keyLessAnim.setOnFinished(e -> {
+                                playingQueue.poll();
                                 goLeftCodeAnim.play();
+                                playingQueue.add(goLeftCodeAnim);
                                 goLeftAnim.play();
+                                playingQueue.add(goLeftAnim);
                                 if(finalFadeMidPointer1 != null) {
                                     finalFadeMidPointer1.play();
+                                    playingQueue.add(finalFadeMidPointer1);
                                 }
                             });
 
                             checkBlockAnim.setOnFinished(e -> {
+                                playingQueue.poll();
                                 keyLessAnim.play();
+                                playingQueue.add(keyLessAnim);
                             });
                             end = middle - 1;
                         } else {
@@ -384,7 +410,6 @@ public class BinarySearch {
                                 fadeTransitions.add(fadeMidPointer);
                             }
 
-
                             TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
                             goRightAnim.setByY(yTranslation);
                             translateTransitions.add(goRightAnim);
@@ -394,14 +419,20 @@ public class BinarySearch {
                             codeAnims.add(nextWhileAnim);
 
                             checkBlockAnim.setOnFinished(e -> {
+                                playingQueue.poll();
                                 goRightAnim.play();
+                                playingQueue.add(goRightAnim);
                                 goRightCodeAnim.play();
+                                playingQueue.add(goRightCodeAnim);
                             });
 
                             goRightCodeAnim.setOnFinished(e-> {
+                                playingQueue.poll();
                                 nextWhileAnim.play();
+                                playingQueue.add(nextWhileAnim);
                                 if(finalFadeMidPointer != null) {
                                     finalFadeMidPointer.play();
+                                    playingQueue.add(finalFadeMidPointer);
                                 }
                             });
 
@@ -415,6 +446,7 @@ public class BinarySearch {
             }
 
             public void handleOnFinished() {
+                // HANDLE ONFINISHED FOR CODE ANIMS
                 int moveMiddleSize = moveMiddleTransitions.size();
                 int moveMiddleArrayCounter = 0;
                 // we're not looping through the whole codeAnim array because the last while codeAnim will handle the RED match-not-found char block animation
@@ -439,26 +471,51 @@ public class BinarySearch {
                                 }
                             }
                             currentAnim.setOnFinished(e -> {
+                                playingQueue.poll();
                                 nextCodeAnim.play();
+                                playingQueue.add(nextCodeAnim);
                                 fadeTransitions.get(fadeInAnims.get(finalMoveMiddleArrayCounter)).play();
+                                playingQueue.offer(fadeTransitions.get(fadeInAnims.get(finalMoveMiddleArrayCounter)));
                                 moveMiddleTransitions.get(finalMoveMiddleArrayCounter).play();
+                                playingQueue.add(moveMiddleTransitions.get(finalMoveMiddleArrayCounter));
                             });
                             moveMiddleArrayCounter++;
                         } else {
                             // handle any whileConditionAnim that should not have a moveMiddle anim after it
                             // check if you can modify the onFinished using getOnFinished
                             currentAnim.setOnFinished(e -> {
+                                playingQueue.poll();
                                 nextAnim.play();
+                                playingQueue.add(nextAnim);
                             });
                         }
                     } else {
                         // handle any other codeblock animations
                         // repeating for semantic
-                        currentAnim.setOnFinished(e -> nextAnim.play());
+                        currentAnim.setOnFinished(e -> {
+                            playingQueue.poll();
+                            nextAnim.play();
+                            playingQueue.add(nextAnim);
+                        });
+                    }
+                }
+                //---
+
+                // Handle Translation animation onFinished
+                for(TranslateTransition tt: translateTransitions) {
+                    if(tt.getOnFinished() == null) {
+                        tt.setOnFinished(e -> playingQueue.poll());
                     }
                 }
 
-                // handle Match-Not-Found animations
+                // Handle fade animations onFinished
+                for(FadeTransition ft: fadeTransitions) {
+                    if(ft.getOnFinished() == null) {
+                        ft.setOnFinished(e -> playingQueue.poll());
+                    }
+                }
+
+                // Handle Match-Not-Found animations
                 if(this.getIndex() == -1) {
                     FillTransition lastWhileAnim = codeAnims.get(codeAnims.size() - 2);
                     // get the last code animation
@@ -469,17 +526,105 @@ public class BinarySearch {
                     keyBlockNoMatchAnim.setCycleCount(1);
 
                     lastWhileAnim.setOnFinished(e -> {
+                        playingQueue.poll();
                         keyBlockNoMatchAnim.play();
+                        playingQueue.add(keyBlockNoMatchAnim);
                         noMatchCodeAnim.play();
+                        playingQueue.add(noMatchCodeAnim);
                         // get all code blocks and animate their colours to RED
                         for(int i = 0; i < charBlocks.length; i++) {
                             FillTransition elementBlockNoMatchAnim = Transitions.createHighlighter(charBlocks[i].getRect(), "char", null);
                             elementBlockNoMatchAnim.setToValue(Color.RED);
                             elementBlockNoMatchAnim.setCycleCount(1);
+                            charBlockAnims.add(elementBlockNoMatchAnim);
                             elementBlockNoMatchAnim.play();
+                            playingQueue.add(elementBlockNoMatchAnim);
                         }
                     });
                 }
+                // Handle char block anims removal from playing queue
+                for(FillTransition ft: charBlockAnims) {
+                    if(ft.getOnFinished() == null) {
+                        ft.setOnFinished(e -> playingQueue.poll());
+                    }
+                }
+            }
+
+            public void setAllAnimations() {
+                allAnimations.addAll(translateTransitions);
+                allAnimations.addAll(codeAnims);
+                allAnimations.addAll(charBlockAnims);
+                allAnimations.addAll(fadeTransitions);
+            }
+
+            private void setAllAnimationsSpeed() {
+                double speedFactor = speedSlider.valueProperty().doubleValue();
+                for (Transition animation : allAnimations) {
+                    animation.setRate(speedFactor);
+                }
+            }
+
+            public void initControls() {
+                speedSlider = new SpeedSlider().getSpeedSlider();
+                speedSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+                    double speedFactor = Math.abs(newValue.doubleValue());
+
+                    for (Transition animation : allAnimations) {
+                        animation.setRate(speedFactor);
+                    }
+                });
+
+                controls.getChildren().add(speedSlider);
+            }
+
+            private void clear() {
+                algoTracerContainer.getChildren().remove(titledPane);
+                mainArea.getChildren().remove(mainAreaContainer);
+
+                for(Transition transition: playingQueue) {
+                    if(transition.getStatus().equals(Animation.Status.RUNNING)) {
+                        transition.stop();
+                    }
+                }
+
+                translateTransitions.clear();
+                moveMiddleTransitions.clear();
+                codeAnims.clear();
+                charBlockAnims.clear();
+                fadeTransitions.clear();
+
+                // reset all Char block colours
+                keyBlock.getRect().setFill(Color.ORANGE);
+                for (CharBlock charBlock : charBlocks) {
+                    charBlock.getRect().setFill(Color.ORANGE);
+                }
+            }
+
+            public void generateNew() {
+                clear();
+
+                this.setIndex(-1);
+                this.resetFlag = false;
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.search();
+                this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
+                this.start();
+            }
+
+            public void reset() {
+                clear();
+
+                this.resetFlag = true;
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.search();
+                this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
+                this.start();
             }
 
             void start() {
@@ -500,6 +645,8 @@ public class BinarySearch {
         binarySearchVis.initMainArea();
         binarySearchVis.search();
         binarySearchVis.handleOnFinished();
+        binarySearchVis.setAllAnimations();
+        binarySearchVis.initControls();
         binarySearchVis.start();
 
         HBox buttonContainer = new HBox();
@@ -508,14 +655,18 @@ public class BinarySearch {
         Button restartButton = new Button("Restart");
         restartButton.setPrefWidth(150);
         restartButton.setPrefHeight(20);
+        restartButton.setOnMouseClicked(e -> binarySearchVis.reset());
 
         Button newSearchButton = new Button("New search");
         newSearchButton.setPrefWidth(150);
         newSearchButton.setPrefHeight(20);
+        newSearchButton.setOnMouseClicked(e -> binarySearchVis.generateNew());
 
         buttonContainer.getChildren().addAll(restartButton, newSearchButton);
 
-        pane.getChildren().addAll(mainArea, algoTracer, buttonContainer);
+        // position controls
+        controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
+        pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);
     }
 
     public Scene getScene() {
