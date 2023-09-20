@@ -24,7 +24,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Queue;
@@ -40,7 +39,6 @@ public class LinearSearch {
         Group mainArea = new Group();
         scene = new Scene(pane, 1366, 500, Color.GHOSTWHITE);
         // Stage stage = new Stage();
-        final int SCREENCENTER_X = (int) pane.getLayoutBounds().getCenterX();
         final int SCREENCENTER_Y = (int) pane.getLayoutBounds().getCenterY();
         mainArea.setLayoutX(20);
 
@@ -152,7 +150,6 @@ public class LinearSearch {
                 increment = new CodeBlock("i++");
                 closingParen = new CodeBlock(")");
                 ArrayList<CodeBlock> forLoopHeader1 = new ArrayList<>(Arrays.asList(fortext, init, counterComp, increment, closingParen));
-
                 generator.addCodeBlocks(forLoopHeader1);
 
                 keyComp = new CodeBlock("if(arr[i] == key)", 35);
@@ -417,7 +414,6 @@ public class LinearSearch {
         newSearchButton.setOnMouseClicked(e -> linearSearchVis.generateNew());
 
         buttonContainer.getChildren().addAll(restartButton, newSearchButton);
-
         // position controls
         controls.relocate(20, mainArea.getLayoutBounds().getMaxY() + 50);
         pane.getChildren().addAll(mainArea, algoTracer, buttonContainer, controls);

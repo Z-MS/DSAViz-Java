@@ -45,4 +45,17 @@ public class MainMenuController {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void enterSelectionSortVis(ActionEvent event) throws IOException {
+        loader = new FXMLLoader(HelloApplication.class.getResource("selection-sort.fxml"));
+        root = loader.load();
+
+        SelectionSortController selectionSortController = loader.getController();
+        selectionSortController.loadSelectionSort(new SelectionSort().getScene());
+
+        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

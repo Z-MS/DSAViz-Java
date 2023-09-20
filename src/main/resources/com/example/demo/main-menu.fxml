@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <Pane prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.MainMenuController">
    <children>
       <GridPane layoutX="264.0" layoutY="182.0" prefHeight="355.0" prefWidth="670.0">
@@ -79,7 +78,7 @@
                   </Label>
                   <HBox alignment="CENTER" spacing="20.0">
                      <children>
-                        <Button alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Visualise">
+                        <Button alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#enterSelectionSortVis" text="Visualise">
                            <font>
                               <Font size="18.0" />
                            </font>
