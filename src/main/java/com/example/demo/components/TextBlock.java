@@ -13,6 +13,10 @@ public abstract class TextBlock extends Group {
     }
 
     public Text getBlockText() { return blockText; }
+
+    public void setBlockText(String newText) {
+        blockText.setText(newText);
+    }
     public Group getBlock() {
         return block;
     }

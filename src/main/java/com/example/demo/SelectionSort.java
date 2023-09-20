@@ -3,8 +3,11 @@ package com.example.demo;
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
 import com.example.demo.components.PlayingQueue;
+import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
+import com.example.demo.utils.Transitions;
+import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
@@ -52,6 +55,8 @@ public class SelectionSort {
             ArrayList<Double> charBlockTextCentres = new ArrayList<>();
             ArrayList <FillTransition> codeAnims = new ArrayList<>();
             ArrayList <TranslateTransition> translateTransitions = new ArrayList<>();
+
+            ArrayList<FadeTransition> fadeTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
             Queue<Transition> playingQueue = new PlayingQueue().getPlayingQueue();
             Polygon elemPointer;
@@ -66,7 +71,7 @@ public class SelectionSort {
             final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 100, 10) : inputArray;
+                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 30, 5) : inputArray;
                 charBlocks = new CharBlock[inputArray.size()];
                 mainAreaContainer = new Group();
 
@@ -186,23 +191,165 @@ public class SelectionSort {
                 algoTracer.getChildren().add(algoTracerContainer);
             }
 
-            void sort(){
+            void sort() {
                 int min = 0;
                 Comparable temp;
+                FillTransition outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
+                codeAnims.add(outerForCompAnim);
                 for(int i = 0; i < inputArray.size() - 1; i++){
                     min = i;
+                    codeAnims.add(Transitions.createHighlighter(initialMinPos.getRect(), "code", null));
+                    codeAnims.add(Transitions.createHighlighter(innerForInit.getRect(), "code", null));
+                    FillTransition innerForCompAnim = Transitions.createHighlighter(innerForComp.getRect(), "code", null);
+                    codeAnims.add(innerForCompAnim);
                     for(int j = i + 1; j < inputArray.size(); j++){
+                        FillTransition compareMinAnim = Transitions.createHighlighter(compareMin.getRect(), "code", null);
+                        codeAnims.add(compareMinAnim);
+                        FillTransition checkBlockAnim = Transitions.createHighlighter(charBlocks[j].getRect(), "char", null);
+                        charBlockAnims.add(checkBlockAnim);
                         if(inputArray.get(j).compareTo(inputArray.get(min)) < 0) {
+                            FillTransition newTempMinAnim = Transitions.createHighlighter(newTempMin.getRect(), "code", null);
+                            codeAnims.add(newTempMinAnim);
                             min = j;
+
+                            checkBlockAnim.setToValue(Color.LAWNGREEN);
                         }
+
+                        innerForCompAnim.setOnFinished(e -> {
+                            playingQueue.poll();
+                            compareMinAnim.play();
+                            playingQueue.add(compareMinAnim);
+                            checkBlockAnim.play();
+                            playingQueue.add(checkBlockAnim);
+                        });
+
+                        FillTransition innerForIncrementAnim = Transitions.createHighlighter(innerForIncrement.getRect(), "code", null);
+                        codeAnims.add(innerForIncrementAnim);
+
+                        innerForCompAnim = Transitions.createHighlighter(innerForComp.getRect(), "code", null);
+                        codeAnims.add(innerForCompAnim);
                     }
                     // hold new minimum value
+                    FillTransition setTempAnim = Transitions.createHighlighter(setTemp.getRect(), "code", null);
+                    codeAnims.add(setTempAnim);
                     temp = inputArray.get(min);
+
+                    // Swap animations - fade numbers
+                    FadeTransition fadeOldMinOut = Transitions.fadeItemOut(charBlocks[inputArray.indexOf(temp)].getBlockText(), 100);
+                    fadeTransitions.add(fadeOldMinOut);
+                    FadeTransition fadeOldMinIn = Transitions.fadeItemIn(charBlocks[inputArray.indexOf(temp)].getBlockText(), 100);
+                    fadeTransitions.add(fadeOldMinIn);
+                    fadeOldMinOut.setOnFinished( e -> {
+                        playingQueue.poll();
+                        fadeOldMinIn.play();
+                        playingQueue.add(fadeOldMinIn);
+                    });
+
+                    // Swap animations - fade numbers
+                    FadeTransition fadeNewMinOut = Transitions.fadeItemOut(charBlocks[i].getBlockText(), 100);
+                    fadeTransitions.add(fadeNewMinOut);
+                    FadeTransition fadeNewMinIn = Transitions.fadeItemIn(charBlocks[i].getBlockText(), 100);
+                    fadeTransitions.add(fadeNewMinIn);
+                    fadeNewMinOut.setOnFinished(e -> {
+                        playingQueue.poll();
+                        fadeNewMinIn.play();
+                        playingQueue.add(fadeNewMinIn);
+                    });
+
+                    // change the value on screen
+                    Comparable finalTemp = temp;
+                    int finalI = i;
+                    String finalCharBlockTemp = temp.toString();
+
                     // set old minimum to its new position
+                    FillTransition repositionOldMinAnim = Transitions.createHighlighter(repositionOldMin.getRect(), "code", null);
+                    codeAnims.add(repositionOldMinAnim);
                     inputArray.set(inputArray.indexOf(temp), inputArray.get(i));
+
                     // set new minimum
+                    FillTransition setNewMinAnim = Transitions.createHighlighter(setNewMin.getRect(), "code", null);
+                    codeAnims.add(setNewMinAnim);
                     inputArray.set(i, temp);
+
+                    repositionOldMinAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        setNewMinAnim.play();
+                        playingQueue.add(setNewMinAnim);
+                        fadeOldMinOut.play();
+                        // loop through charBlocks and check which has the same value as temp, then change it
+                        for(int counter = 0; counter < charBlocks.length; counter++) {
+                            if(charBlocks[counter].getBlockText().getText().equals(finalCharBlockTemp)) {
+                                charBlocks[counter].setBlockText(charBlocks[finalI].getBlockText().getText());
+                            }
+                        }
+
+                        playingQueue.add(fadeOldMinOut);
+                        fadeNewMinOut.play();
+
+                        charBlocks[finalI].setBlockText(finalTemp.toString());
+                        playingQueue.add(fadeNewMinOut);
+                    });
+
+                    FillTransition outerForIncrementAnim = Transitions.createHighlighter(outerForIncrement.getRect(), "code", null);
+                    codeAnims.add(outerForIncrementAnim);
+
+                    outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
+                    codeAnims.add(outerForCompAnim);
                 }
+
+            }
+
+            public void handleOnFinished() {
+                // handle codeblock anims
+                for(int count = 0; count < codeAnims.size() - 1; count++) {
+                    FillTransition currentAnim = codeAnims.get(count);
+                    if(currentAnim.getOnFinished() != null) {
+                        continue;
+                    }
+                    FillTransition nextAnim = codeAnims.get(count + 1);
+                    currentAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        nextAnim.play();
+                        playingQueue.add(nextAnim);
+                    });
+                }
+
+                // Handle char block anims removal from playing queue
+                for(FillTransition ft: charBlockAnims) {
+                    if(ft.getOnFinished() == null) {
+                        ft.setOnFinished(e -> playingQueue.poll());
+                    }
+                }
+            }
+
+            public void setAllAnimations() {
+                allAnimations.addAll(translateTransitions);
+                allAnimations.addAll(codeAnims);
+                allAnimations.addAll(charBlockAnims);
+                allAnimations.addAll(fadeTransitions);
+            }
+
+            private void setAllAnimationsSpeed() {
+                double speedFactor = speedSlider.valueProperty().doubleValue();
+                for (Transition animation : allAnimations) {
+                    animation.setRate(speedFactor);
+                }
+            }
+
+            public void initControls() {
+                speedSlider = new SpeedSlider().getSpeedSlider();
+                speedSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+                    double speedFactor = Math.abs(newValue.doubleValue());
+
+                    for (Transition animation : allAnimations) {
+                        animation.setRate(speedFactor);
+                    }
+                });
+
+                controls.getChildren().add(speedSlider);
+            }
+            public void start() {
+                codeAnims.get(0).play();
             }
         }
 
@@ -210,6 +357,10 @@ public class SelectionSort {
         selectionSortVis.initAlgoTracer();
         selectionSortVis.initMainArea();
         selectionSortVis.sort();
+        selectionSortVis.handleOnFinished();
+        selectionSortVis.setAllAnimations();
+        selectionSortVis.initControls();
+        selectionSortVis.start();
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutX(10);

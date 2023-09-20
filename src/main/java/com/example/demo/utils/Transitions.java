@@ -14,6 +14,7 @@ public class Transitions {
     private static final Duration defaultTranslationDuration = Duration.millis(300);
     private static final Duration defaultFillDuration = Duration.millis(400);
 
+    private static final Duration defaultFadeDuration = Duration.millis(200);
     public static FillTransition createHighlighter(Shape node, Color startColor, Color endColor, Integer duration) {
         FillTransition ft = new FillTransition();
         ft.setShape(node);
@@ -69,16 +70,28 @@ public class Transitions {
         return translateTransition;
     }
 
-    public static FadeTransition fadeItemIn(Node node) {
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(200), node);
+    public static FadeTransition fadeItemIn(Node node, Integer duration) {
+        FadeTransition fadeTransition = new FadeTransition();
+        fadeTransition.setNode(node);
+        if(duration != null) {
+            fadeTransition.setDuration(Duration.millis(duration));
+        } else {
+            fadeTransition.setDuration(defaultFadeDuration);
+        }
         fadeTransition.setCycleCount(1);
         fadeTransition.setFromValue(0.0);
         fadeTransition.setToValue(1.0);
         return fadeTransition;
     }
 
-    public static FadeTransition fadeItemOut(Node node) {
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(200), node);
+    public static FadeTransition fadeItemOut(Node node, Integer duration) {
+        FadeTransition fadeTransition = new FadeTransition();
+        fadeTransition.setNode(node);
+        if(duration != null) {
+            fadeTransition.setDuration(Duration.millis(duration));
+        } else {
+            fadeTransition.setDuration(defaultFadeDuration);
+        }
         fadeTransition.setCycleCount(1);
         fadeTransition.setFromValue(1.0);
         fadeTransition.setToValue(0.0);

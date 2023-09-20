@@ -239,7 +239,7 @@ public class BinarySearch {
                 FillTransition whileConditionAnim = Transitions.createHighlighter(whileCondition.getRect(), "code", null);
                 codeAnims.add(whileConditionAnim);
 
-                FadeTransition fadeMidPointer = Transitions.fadeItemIn(midPointer);
+                FadeTransition fadeMidPointer = Transitions.fadeItemIn(midPointer, null);
                 // we're multiplying by 2 because the CodeBlock animations have a cycle count of 2. In other words, they take twice the time of their specified duration to complete
                 fadeMidPointer.setDelay(whileConditionAnim.getDuration().multiply(2));
                 fadeTransitions.add(fadeMidPointer);
@@ -281,7 +281,7 @@ public class BinarySearch {
                             }
                             midPointerLevel = "BOTTOM";
                         }
-                        fadeMidPointer = Transitions.fadeItemIn(midPointer);
+                        fadeMidPointer = Transitions.fadeItemIn(midPointer, null);
                         fadeTransitions.add(fadeMidPointer);
                         TranslateTransition moveMiddle = Transitions.translateX(midPointer, distanceFromNewMiddle,300);
                         moveMiddle.setByY(yTranslation);
@@ -347,7 +347,7 @@ public class BinarySearch {
                             } else {
                                 // search continues
                                 distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
-                                fadeMidPointer = Transitions.fadeItemOut(midPointer);
+                                fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
                                 fadeTransitions.add(fadeMidPointer);
                             }
 
@@ -406,7 +406,7 @@ public class BinarySearch {
 
                             } else {
                                 distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
-                                fadeMidPointer = Transitions.fadeItemOut(midPointer);
+                                fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
                                 fadeTransitions.add(fadeMidPointer);
                             }
 
