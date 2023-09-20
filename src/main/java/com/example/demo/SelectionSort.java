@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Queue;
 
 public class SelectionSort {
@@ -53,7 +54,8 @@ public class SelectionSort {
             ArrayList <TranslateTransition> translateTransitions = new ArrayList<>();
             ArrayList<Transition> allAnimations = new ArrayList<>();
             Queue<Transition> playingQueue = new PlayingQueue().getPlayingQueue();
-            Polygon elemPointer, minPointer;
+            Polygon elemPointer;
+            Group minPointer;
             double pointerWidth;
 
             CodeBlock methodDef, tempDeclaration, outerForText, outerForInit, outerForComp, outerForIncrement, closingParen1, initialMinPos, innerForText, innerForInit, innerForComp, innerForIncrement, closingParen2, compareMin, newTempMin, setTemp, repositionOldMin, setNewMin;
@@ -64,10 +66,9 @@ public class SelectionSort {
             final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 20, 10) : inputArray;
+                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 100, 10) : inputArray;
                 charBlocks = new CharBlock[inputArray.size()];
                 mainAreaContainer = new Group();
-                int blockIndent = 60;
 
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
@@ -101,6 +102,31 @@ public class SelectionSort {
                     Bounds bounds = indexText.localToScene(indexText.getBoundsInLocal());
                     indexTextCentres.add(bounds.getCenterX());
                 }
+
+                Polygon minPointerShape = new Polygon();
+                minPointerShape.getPoints().addAll(
+                        indexTexts.get(0).getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                        indexTexts.get(0).getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                        indexTexts.get(0).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
+                );
+
+                pointerWidth = minPointerShape.getLayoutBounds().getWidth();
+                minPointerShape.setFill(Color.BLUE);
+                Text minPointerLabel = new Text(minPointerShape.getLayoutBounds().getMinX() - 5, minPointerShape.getLayoutBounds().getMaxY() - 20, "min");
+                minPointerLabel.setFont(new Font("Consolas", 15));
+                minPointerLabel.setFill(Color.BLACK);
+
+                minPointer = new Group(minPointerShape, minPointerLabel);
+
+                elemPointer = new Polygon();
+                elemPointer.getPoints().addAll(
+                        indexTexts.get(1).getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                        indexTexts.get(1).getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                        indexTexts.get(1).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
+                );
+                elemPointer.setFill(Color.RED);
+
+                mainAreaContainer.getChildren().addAll(minPointer, elemPointer);
                 mainArea.getChildren().add(mainAreaContainer);
             }
             void initAlgoTracer() {
@@ -159,11 +185,31 @@ public class SelectionSort {
                 algoTracerContainer.getChildren().add(titledPane);
                 algoTracer.getChildren().add(algoTracerContainer);
             }
+
+            void sort(){
+                int min = 0;
+                Comparable temp;
+                for(int i = 0; i < inputArray.size() - 1; i++){
+                    min = i;
+                    for(int j = i + 1; j < inputArray.size(); j++){
+                        if(inputArray.get(j).compareTo(inputArray.get(min)) < 0) {
+                            min = j;
+                        }
+                    }
+                    // hold new minimum value
+                    temp = inputArray.get(min);
+                    // set old minimum to its new position
+                    inputArray.set(inputArray.indexOf(temp), inputArray.get(i));
+                    // set new minimum
+                    inputArray.set(i, temp);
+                }
+            }
         }
 
         Visualise selectionSortVis = new Visualise();
         selectionSortVis.initAlgoTracer();
         selectionSortVis.initMainArea();
+        selectionSortVis.sort();
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutX(10);
