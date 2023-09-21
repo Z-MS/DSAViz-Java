@@ -5,12 +5,10 @@ import com.example.demo.components.CodeBlock;
 import com.example.demo.components.PlayingQueue;
 import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
+import com.example.demo.utils.DeepCopy;
 import com.example.demo.utils.RandomGenerator;
 import com.example.demo.utils.Transitions;
-import javafx.animation.FadeTransition;
-import javafx.animation.FillTransition;
-import javafx.animation.Transition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -46,6 +44,8 @@ public class SelectionSort {
             Slider speedSlider;
             boolean resetFlag = false;
             ArrayList<Comparable> inputArray = new ArrayList<>();
+
+            ArrayList<Comparable> stickyInputArray = new ArrayList<>();
             CharBlock[] charBlocks;
             ArrayList <FillTransition> charBlockAnims = new ArrayList<>();
             ArrayList<Text> indexTexts = new ArrayList<>();
@@ -71,7 +71,17 @@ public class SelectionSort {
             final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(5, 30, 5) : inputArray;
+                if(!resetFlag) {
+                    inputArray = RandomGenerator.generateRandomNumbers(5, 30, 5);
+                    // copy inputArray to stickyInputArray
+                    DeepCopy.copy(inputArray, stickyInputArray);
+                } else {
+                    // copy stickyInputArray to inputArray
+                    DeepCopy.copy(stickyInputArray, inputArray);
+                }
+//                inputArray = !resetFlag ? RandomGenerator.generateRandomNumbers(5, 30, 5) : stickyInputArray;
+//                stickyInputArray = !resetFlag ? inputArray : stickyInputArray;
+
                 charBlocks = new CharBlock[inputArray.size()];
                 mainAreaContainer = new Group();
 
@@ -437,6 +447,54 @@ public class SelectionSort {
 
                 controls.getChildren().add(speedSlider);
             }
+
+            private void clear() {
+                algoTracerContainer.getChildren().remove(titledPane);
+                mainArea.getChildren().remove(mainAreaContainer);
+
+                for(Transition transition: playingQueue) {
+                    if(transition.getStatus().equals(Animation.Status.RUNNING)) {
+                        transition.stop();
+                    }
+                }
+
+                translateTransitions.clear();
+                codeAnims.clear();
+                charBlockAnims.clear();
+                fadeTransitions.clear();
+
+                // reset all Char block colours
+                for (CharBlock charBlock : charBlocks) {
+                    charBlock.getRect().setFill(Color.ORANGE);
+                }
+            }
+            public void generateNew() {
+                // generate new chars and change the codeblock text value
+                clear();
+
+                this.resetFlag = false;
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.sort();
+                this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
+                this.start();
+            }
+
+            void reset() {
+                clear();
+
+                this.resetFlag = true;
+                this.initMainArea();
+                this.initAlgoTracer();
+                this.sort();
+                this.handleOnFinished();
+                this.setAllAnimations();
+                this.setAllAnimationsSpeed();
+                this.start();
+            }
+
             public void start() {
                 codeAnims.get(0).play();
             }
@@ -457,10 +515,12 @@ public class SelectionSort {
         Button restartButton = new Button("Restart");
         restartButton.setPrefWidth(150);
         restartButton.setPrefHeight(20);
+        restartButton.setOnMouseClicked(e -> selectionSortVis.reset());
 
         Button newSearchButton = new Button("New sort");
         newSearchButton.setPrefWidth(150);
         newSearchButton.setPrefHeight(20);
+        newSearchButton.setOnMouseClicked(e -> selectionSortVis.generateNew());
 
         buttonContainer.getChildren().addAll(restartButton, newSearchButton);
         // position controls
