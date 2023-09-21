@@ -78,10 +78,10 @@ public class SelectionSort {
                 for (int c = 0; c < inputArray.size(); c++) {
                     CharBlock charBlock;
                     if(c == 0) {
-                        charBlock = new CharBlock(20, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                        charBlock = new CharBlock(20, SCREENCENTER_Y + 70, 60, String.valueOf(inputArray.get(c)), null, 40);
                     } else {
                         double previousBlockEdge = charBlocks[c-1].getRect().getLayoutBounds().getMaxX();
-                        charBlock = new CharBlock(previousBlockEdge + 15, SCREENCENTER_Y + 70, 60, "" + inputArray.get(c), null, 40);
+                        charBlock = new CharBlock(previousBlockEdge + 15, SCREENCENTER_Y + 70, 60, String.valueOf(inputArray.get(c)), null, 40);
                     }
                     Rectangle rect = charBlock.getRect();
                     rect.setStroke(Color.BLACK);
@@ -367,6 +367,18 @@ public class SelectionSort {
                         } else {
                             charBlocks[finalI].getRect().setFill(Color.LAWNGREEN);
                             charBlocks[finalI + 1].getRect().setFill(Color.LAWNGREEN);
+                        }
+
+                        if(finalI + 1 == inputArray.size() - 1) {
+                            FadeTransition fadeOutMinPointer = Transitions.fadeItemOut(minPointer, null);
+                            fadeTransitions.add(fadeOutMinPointer);
+                            FadeTransition fadeOutElemPointer = Transitions.fadeItemOut(elemPointer, null);
+                            fadeTransitions.add(fadeOutElemPointer);
+
+                            fadeOutMinPointer.play();
+                            playingQueue.add(fadeOutMinPointer);
+                            fadeOutElemPointer.play();
+                            playingQueue.add(fadeOutElemPointer);
                         }
 
                         finalOuterForCompAnim.play();
