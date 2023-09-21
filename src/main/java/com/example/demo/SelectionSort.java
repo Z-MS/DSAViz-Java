@@ -198,26 +198,41 @@ public class SelectionSort {
                 FillTransition outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
                 codeAnims.add(outerForCompAnim);
                 for(int i = 0; i < inputArray.size() - 1; i++){
+                    int oldMin = min;
                     min = i;
 
                     FillTransition initialMinPosAnim = Transitions.createHighlighter(initialMinPos.getRect(), "code", null);
                     codeAnims.add(initialMinPosAnim);
 
                     // moveMinPointer to the next block
-                    TranslateTransition moveMinPointer = null;
+                    TranslateTransition repositionMinPointer = null;
+                    TranslateTransition repositionElemPointer;
                     // we want to move the min pointer at the start of each iteration AFTER the first iteration
                     if(i > 0) {
-                        moveMinPointer = Transitions.translateX(minPointer, distanceBetweenAdjBlocks, null);
-                        translateTransitions.add(moveMinPointer);
+                        // bring the min pointer back from the position it had on the last iteration and place it in the new correct position
+                        double displacementFromNewMin = indexTextCentres.get(min) - indexTextCentres.get(oldMin);
+                        repositionMinPointer = Transitions.translateX(minPointer, displacementFromNewMin, null);
+                        translateTransitions.add(repositionMinPointer);
+
+                        double displacementFromNewPos = indexTextCentres.get(i + 1) - (indexTextCentres.get(indexTextCentres.size() - 1) + distanceBetweenAdjBlocks);
+                        repositionElemPointer = Transitions.translateX(elemPointer, displacementFromNewPos, null);
+                        translateTransitions.add(repositionElemPointer);
+
+                        repositionMinPointer.setOnFinished(e -> {
+                            playingQueue.poll();
+                            repositionElemPointer.play();
+                            playingQueue.add(repositionElemPointer);
+                        });
                     }
-                    TranslateTransition finalMoveMinPointer = moveMinPointer;
+
+                    TranslateTransition finalRepositionMinPointer = repositionMinPointer;
                     outerForCompAnim.setOnFinished(e -> {
                         playingQueue.poll();
                         initialMinPosAnim.play();
                         playingQueue.add(initialMinPosAnim);
-                        if (finalMoveMinPointer != null) {
-                            finalMoveMinPointer.play();
-                            playingQueue.add(finalMoveMinPointer);
+                        if (finalRepositionMinPointer != null) {
+                            finalRepositionMinPointer.play();
+                            playingQueue.add(finalRepositionMinPointer);
                         }
                     });
 
@@ -235,10 +250,19 @@ public class SelectionSort {
                             double distanceFromOldMin = indexTextCentres.get(j) - indexTextCentres.get(min);
                             min = j;
 
+
                             checkBlockAnim.setToValue(Color.LAWNGREEN);
 
-                            moveMinPointer = Transitions.translateX(minPointer, distanceFromOldMin, null);
-                            translateTransitions.add(moveMinPointer);
+                            TranslateTransition moveMinPointerForward = Transitions.translateX(minPointer, distanceFromOldMin, null);
+                            translateTransitions.add(moveMinPointerForward);
+
+                            compareMinAnim.setOnFinished(e -> {
+                                playingQueue.poll();
+                                newTempMinAnim.play();
+                                playingQueue.add(newTempMinAnim);
+                                moveMinPointerForward.play();
+                                playingQueue.add(moveMinPointerForward);
+                            });
                         }
 
                         innerForCompAnim.setOnFinished(e -> {
@@ -252,8 +276,20 @@ public class SelectionSort {
                         FillTransition innerForIncrementAnim = Transitions.createHighlighter(innerForIncrement.getRect(), "code", null);
                         codeAnims.add(innerForIncrementAnim);
 
+                        TranslateTransition moveElemPointerForward = Transitions.translateX(elemPointer, distanceBetweenAdjBlocks, null);
+                        translateTransitions.add(moveElemPointerForward);
+
                         innerForCompAnim = Transitions.createHighlighter(innerForComp.getRect(), "code", null);
                         codeAnims.add(innerForCompAnim);
+
+                        FillTransition finalInnerForCompAnim = innerForCompAnim;
+                        innerForIncrementAnim.setOnFinished(e -> {
+                            playingQueue.poll();
+                            moveElemPointerForward.play();
+                            playingQueue.add(moveElemPointerForward);
+                            finalInnerForCompAnim.play();
+                            playingQueue.add(finalInnerForCompAnim);
+                        });
                     }
                     // hold new minimum value
                     FillTransition setTempAnim = Transitions.createHighlighter(setTemp.getRect(), "code", null);
@@ -318,7 +354,6 @@ public class SelectionSort {
 
                     FillTransition outerForIncrementAnim = Transitions.createHighlighter(outerForIncrement.getRect(), "code", null);
                     codeAnims.add(outerForIncrementAnim);
-
 
                     outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
                     codeAnims.add(outerForCompAnim);
