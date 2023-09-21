@@ -194,11 +194,33 @@ public class SelectionSort {
             void sort() {
                 int min = 0;
                 Comparable temp;
+                final double distanceBetweenAdjBlocks = indexTextCentres.get(1) - indexTextCentres.get(0);
                 FillTransition outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
                 codeAnims.add(outerForCompAnim);
                 for(int i = 0; i < inputArray.size() - 1; i++){
                     min = i;
-                    codeAnims.add(Transitions.createHighlighter(initialMinPos.getRect(), "code", null));
+
+                    FillTransition initialMinPosAnim = Transitions.createHighlighter(initialMinPos.getRect(), "code", null);
+                    codeAnims.add(initialMinPosAnim);
+
+                    // moveMinPointer to the next block
+                    TranslateTransition moveMinPointer = null;
+                    // we want to move the min pointer at the start of each iteration AFTER the first iteration
+                    if(i > 0) {
+                        moveMinPointer = Transitions.translateX(minPointer, distanceBetweenAdjBlocks, null);
+                        translateTransitions.add(moveMinPointer);
+                    }
+                    TranslateTransition finalMoveMinPointer = moveMinPointer;
+                    outerForCompAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        initialMinPosAnim.play();
+                        playingQueue.add(initialMinPosAnim);
+                        if (finalMoveMinPointer != null) {
+                            finalMoveMinPointer.play();
+                            playingQueue.add(finalMoveMinPointer);
+                        }
+                    });
+
                     codeAnims.add(Transitions.createHighlighter(innerForInit.getRect(), "code", null));
                     FillTransition innerForCompAnim = Transitions.createHighlighter(innerForComp.getRect(), "code", null);
                     codeAnims.add(innerForCompAnim);
@@ -210,9 +232,13 @@ public class SelectionSort {
                         if(inputArray.get(j).compareTo(inputArray.get(min)) < 0) {
                             FillTransition newTempMinAnim = Transitions.createHighlighter(newTempMin.getRect(), "code", null);
                             codeAnims.add(newTempMinAnim);
+                            double distanceFromOldMin = indexTextCentres.get(j) - indexTextCentres.get(min);
                             min = j;
 
                             checkBlockAnim.setToValue(Color.LAWNGREEN);
+
+                            moveMinPointer = Transitions.translateX(minPointer, distanceFromOldMin, null);
+                            translateTransitions.add(moveMinPointer);
                         }
 
                         innerForCompAnim.setOnFinished(e -> {
@@ -293,8 +319,24 @@ public class SelectionSort {
                     FillTransition outerForIncrementAnim = Transitions.createHighlighter(outerForIncrement.getRect(), "code", null);
                     codeAnims.add(outerForIncrementAnim);
 
+
                     outerForCompAnim = Transitions.createHighlighter(outerForComp.getRect(), "code", null);
                     codeAnims.add(outerForCompAnim);
+
+                    FillTransition finalOuterForCompAnim = outerForCompAnim;
+                    outerForIncrementAnim.setOnFinished(e -> {
+                        playingQueue.poll();
+                        // Colour the sorted blocks
+                        if(finalI + 1 != charBlocks.length - 1) {
+                            charBlocks[finalI].getRect().setFill(Color.LAWNGREEN);
+                        } else {
+                            charBlocks[finalI].getRect().setFill(Color.LAWNGREEN);
+                            charBlocks[finalI + 1].getRect().setFill(Color.LAWNGREEN);
+                        }
+
+                        finalOuterForCompAnim.play();
+                        playingQueue.add(finalOuterForCompAnim);
+                    });
                 }
 
             }
