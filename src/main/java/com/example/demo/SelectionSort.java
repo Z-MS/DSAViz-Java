@@ -52,7 +52,6 @@ public class SelectionSort {
             ArrayList<Double> indexTextCentres = new ArrayList<>();
 
             ArrayList<Text> charBlockTexts = new ArrayList<>();
-            ArrayList<Double> charBlockTextCentres = new ArrayList<>();
             ArrayList <FillTransition> codeAnims = new ArrayList<>();
             ArrayList <TranslateTransition> translateTransitions = new ArrayList<>();
 
@@ -104,8 +103,6 @@ public class SelectionSort {
                     indexText.setX(rect.getLayoutBounds().getCenterX() - indexText.getLayoutBounds().getCenterX());
                     indexText.setY(rect.getLayoutBounds().getMaxY() + 30);
                     indexTexts.add(indexText);
-
-                    charBlockTextCentres.add(charBlock.getBlockText().getLayoutBounds().getCenterX());
 
                     charBlocks[c] = charBlock;
 

@@ -73,9 +73,9 @@ public class LinearSearch {
             final int indentY = (int) (pane.getLayoutBounds().getCenterY()) - 50;
 
             void initMainArea() {
-                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomCharacters( 10) : inputArray;
+                inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(0,20, 10 ) : inputArray;
                 charBlocks = new CharBlock[inputArray.size()];
-                key = key == null || !resetFlag ? RandomGenerator.generateRandomCharacter() : key;
+                key = key == null || !resetFlag ? RandomGenerator.generateRandomNumber(0, 20) : key;
                 mainAreaContainer = new Group();
                 int blockIndent = 60;
 

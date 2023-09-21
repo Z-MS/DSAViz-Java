@@ -363,6 +363,7 @@ public class BinarySearch {
                             codeAnims.add(goLeftCodeAnim);
                             codeAnims.add(nextWhileAnim);
 
+                            int finalMiddle = middle;
                             keyLessAnim.setOnFinished(e -> {
                                 playingQueue.poll();
                                 goLeftCodeAnim.play();
@@ -372,6 +373,10 @@ public class BinarySearch {
                                 if(finalFadeMidPointer1 != null) {
                                     finalFadeMidPointer1.play();
                                     playingQueue.add(finalFadeMidPointer1);
+                                }
+                                // Grey out the areas we're not searching anymore
+                                for(int i = finalMiddle; i < charBlocks.length; i++) {
+                                    charBlocks[i].getRect().setFill(Color.GREY);
                                 }
                             });
 
@@ -418,12 +423,17 @@ public class BinarySearch {
                             codeAnims.add(goRightCodeAnim);
                             codeAnims.add(nextWhileAnim);
 
+                            int finalMiddle1 = middle;
                             checkBlockAnim.setOnFinished(e -> {
                                 playingQueue.poll();
                                 goRightAnim.play();
                                 playingQueue.add(goRightAnim);
                                 goRightCodeAnim.play();
                                 playingQueue.add(goRightCodeAnim);
+                                // Grey out the areas we're not searching anymore
+                                for(int i = 0; i <= finalMiddle1; i++) {
+                                    charBlocks[i].getRect().setFill(Color.GREY);
+                                }
                             });
 
                             goRightCodeAnim.setOnFinished(e-> {
