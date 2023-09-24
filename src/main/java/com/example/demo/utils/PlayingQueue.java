@@ -1,6 +1,5 @@
-package com.example.demo.components;
+package com.example.demo.utils;
 
-import com.example.demo.BinarySearch;
 import javafx.animation.Transition;
 import javafx.util.Duration;
 

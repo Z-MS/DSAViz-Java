@@ -2,31 +2,12 @@ package com.example.demo;
 
 import com.example.demo.utils.NavigationHelper;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class MainMenuController {
-    private Stage stage;
-    private Scene scene;
-    private FXMLLoader loader;
-    private Parent root;
-
     public void enterLinearSearchVis(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(HelloApplication.class.getResource("linear-search.fxml"));
-        root = loader.load();
-
-        LinearSearchController linearSearchController = loader.getController();
-        linearSearchController.loadLinearSearch(new LinearSearch().getScene());
-
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        NavigationHelper.enterLinearSearchVis(event);
     }
 
     public void enterLinearSearchLesson(ActionEvent event) throws IOException {
@@ -34,28 +15,10 @@ public class MainMenuController {
     }
 
     public void enterBinarySearchVis(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(HelloApplication.class.getResource("binary-search.fxml"));
-        root = loader.load();
-
-        BinarySearchController binarySearchController = loader.getController();
-        binarySearchController.loadBinarySearch(new BinarySearch().getScene());
-
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        NavigationHelper.enterBinarySearchVis(event);
     }
 
     public void enterSelectionSortVis(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(HelloApplication.class.getResource("selection-sort.fxml"));
-        root = loader.load();
-
-        SelectionSortController selectionSortController = loader.getController();
-        selectionSortController.loadSelectionSort(new SelectionSort().getScene());
-
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        NavigationHelper.enterSelectionSortVis(event);
     }
 }

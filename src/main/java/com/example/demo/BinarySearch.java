@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
-import com.example.demo.components.PlayingQueue;
+import com.example.demo.utils.PlayingQueue;
 import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.RandomGenerator;
@@ -20,9 +20,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
-
-import java.lang.reflect.Array;
 
 import java.util.*;
 

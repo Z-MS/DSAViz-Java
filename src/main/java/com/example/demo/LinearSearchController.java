@@ -18,6 +18,10 @@ public class LinearSearchController {
         NavigationHelper.goHome(event);
     }
 
+    public void goToLesson(ActionEvent event) throws IOException {
+        NavigationHelper.goToPage(event, "linear-search-lesson.fxml");
+    }
+
     public void loadLinearSearch(Scene scene) {
         Pane newScene = (Pane) scene.getRoot();
 

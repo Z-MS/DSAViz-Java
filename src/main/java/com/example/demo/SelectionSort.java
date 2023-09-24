@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.components.CharBlock;
 import com.example.demo.components.CodeBlock;
-import com.example.demo.components.PlayingQueue;
+import com.example.demo.utils.PlayingQueue;
 import com.example.demo.components.SpeedSlider;
 import com.example.demo.utils.CodeBlockGenerator;
 import com.example.demo.utils.DeepCopy;
@@ -24,7 +24,6 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Queue;
 
 public class SelectionSort {
