@@ -38,7 +38,7 @@ public class NavigationHelper {
         Parent root = loader.load();
 
         LinearSearchController linearSearchController = loader.getController();
-        linearSearchController.loadLinearSearch(new NewLinearSearch().getScene());
+        linearSearchController.loadLinearSearch(new LinearSearch().getScene());
 
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);

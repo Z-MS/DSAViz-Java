@@ -66,7 +66,7 @@ public class LinearSearch extends Visualisations {
         }
 
         int middleBlockIndex = (int) Math.floor(charBlocks.length / 2);
-        keyBlock = new CharBlock(charBlocks[middleBlockIndex].getRect().getX(), SCREENCENTER_Y / 1.5, 60, "" + key, null, 40);
+        keyBlock = new CharBlock(charBlocks[middleBlockIndex].getRect().getX(), SCREENCENTER_Y / 1.75, 60, "" + key, null, 40);
         keyBlock.getRect().setStroke(Color.BLACK);
         keyBlock.getRect().setArcWidth(5);
         keyBlock.getRect().setArcHeight(5);
@@ -82,9 +82,9 @@ public class LinearSearch extends Visualisations {
                         10.0, 20.0 // third vertex
                 );*/
         pointer.getPoints().addAll(
-                charBlocks[0].getBlockText().getLayoutBounds().getMinX(), SCREENCENTER_Y - 20.0,
-                charBlocks[0].getBlockText().getLayoutBounds().getMaxX(), SCREENCENTER_Y - 20.0,
-                charBlocks[0].getBlockText().getLayoutBounds().getCenterX(), SCREENCENTER_Y - 10.0
+                indexTexts.get(0).getLayoutBounds().getMinX(), charBlocks[0].getRect().getY() - 20,
+                indexTexts.get(0).getLayoutBounds().getMaxX(), charBlocks[0].getRect().getY() - 20,
+                indexTexts.get(0).getLayoutBounds().getCenterX(), charBlocks[0].getRect().getY() - 5
         );
 
         pointerWidth = pointer.getLayoutBounds().getWidth();
