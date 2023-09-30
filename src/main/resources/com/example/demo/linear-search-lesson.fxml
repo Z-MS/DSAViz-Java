@@ -33,13 +33,13 @@
             </HBox>
         </items>
       </ToolBar>
-      <ScrollPane layoutX="220.0" layoutY="69.0" prefHeight="603.0" prefWidth="889.0">
+      <ScrollPane layoutX="220.0" layoutY="69.0" prefHeight="603.0" prefWidth="905.0">
          <content>
             <VBox prefHeight="601.0" prefWidth="886.0">
                <children>
-                  <TextFlow prefHeight="200.0" prefWidth="200.0">
+                  <TextFlow prefHeight="850.0" prefWidth="898.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextText">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Linear Search Algorithm" wrappingWidth="855.703125">
                            <font>
                               <Font size="16.0" />
                            </font>

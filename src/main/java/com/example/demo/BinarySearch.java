@@ -333,7 +333,6 @@ public class BinarySearch {
 
                             // IF end - 1 < start, a.k.a No Match was found.
                             if(end - 1 < start) {
-                                fadeMidPointer = null;
                                 // if it passes the left edge
                                 if (middle - 1 < 0) {
                                     // negating it so the translate X can move left
@@ -344,9 +343,9 @@ public class BinarySearch {
                             } else {
                                 // search continues
                                 distance = indexTextCentres.get(middle - 1) - indexTextCentres.get(end);
-                                fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
-                                fadeTransitions.add(fadeMidPointer);
                             }
+                            fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
+                            fadeTransitions.add(fadeMidPointer);
 
                             TranslateTransition goLeftAnim = Transitions.translateX(endPointer, distance, 200);
                             goLeftAnim.setByY(yTranslation);
@@ -367,10 +366,8 @@ public class BinarySearch {
                                 playingQueue.add(goLeftCodeAnim);
                                 goLeftAnim.play();
                                 playingQueue.add(goLeftAnim);
-                                if(finalFadeMidPointer1 != null) {
-                                    finalFadeMidPointer1.play();
-                                    playingQueue.add(finalFadeMidPointer1);
-                                }
+                                finalFadeMidPointer1.play();
+                                playingQueue.add(finalFadeMidPointer1);
                                 // Grey out the areas we're not searching anymore
                                 for(int i = finalMiddle; i < charBlocks.length; i++) {
                                     charBlocks[i].getRect().setFill(Color.GREY);
@@ -399,7 +396,6 @@ public class BinarySearch {
 
                             // IF start + 1 > end should be the main condition. Then the edge stuff should be inside
                             if(start + 1 > end) {
-                                fadeMidPointer = null;
                                 if (middle + 1 == inputArray.size()) {
                                     distance = (pointerWidth * 3);
                                 } else {
@@ -408,9 +404,9 @@ public class BinarySearch {
 
                             } else {
                                 distance = indexTextCentres.get(middle + 1) - indexTextCentres.get(start);
-                                fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
-                                fadeTransitions.add(fadeMidPointer);
                             }
+                            fadeMidPointer = Transitions.fadeItemOut(midPointer, null);
+                            fadeTransitions.add(fadeMidPointer);
 
                             TranslateTransition goRightAnim = Transitions.translateX(startPointer, distance, 200);
                             goRightAnim.setByY(yTranslation);
@@ -437,10 +433,8 @@ public class BinarySearch {
                                 playingQueue.poll();
                                 nextWhileAnim.play();
                                 playingQueue.add(nextWhileAnim);
-                                if(finalFadeMidPointer != null) {
-                                    finalFadeMidPointer.play();
-                                    playingQueue.add(finalFadeMidPointer);
-                                }
+                                finalFadeMidPointer.play();
+                                playingQueue.add(finalFadeMidPointer);
                             });
 
                             start = middle + 1;

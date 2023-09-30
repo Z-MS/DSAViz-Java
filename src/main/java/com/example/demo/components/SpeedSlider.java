@@ -7,8 +7,8 @@ import javafx.util.StringConverter;
 
 public class SpeedSlider {
     private final double MIN_SPEED = 0.25;
-    private final double MID_SPEED = 1.25;
-    private final double MAX_SPEED = 2.25;
+    private final double MID_SPEED = 1.75;
+    private final double MAX_SPEED = 3;
 
     private Slider speedSlider;
     public SpeedSlider() {
