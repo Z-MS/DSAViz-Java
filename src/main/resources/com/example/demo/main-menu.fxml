@@ -68,7 +68,7 @@
                               <Font size="18.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" text="Learn">
+                        <Button mnemonicParsing="false" onAction="#enterBinarySearchLesson" text="Learn">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -94,7 +94,7 @@
                               <Font size="18.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" text="Learn">
+                        <Button mnemonicParsing="false" onAction="#enterSelectionSortLesson" text="Learn">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -139,7 +139,7 @@
                   </Label>
                   <HBox alignment="CENTER" prefHeight="39.0" prefWidth="202.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Learn">
+                        <Button mnemonicParsing="false" onAction="#enterStacksLesson" text="Learn">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -160,7 +160,7 @@
                   </Label>
                   <HBox alignment="CENTER" prefHeight="39.0" prefWidth="377.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Learn">
+                        <Button mnemonicParsing="false" onAction="#enterQueueLesson" text="Learn">
                            <font>
                               <Font size="18.0" />
                            </font>

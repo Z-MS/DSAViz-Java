@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 public class LinearSearch extends Visualisations {
     private int index = -1;
-    private Comparable key = null;
+    private Comparable key;
     private CharBlock keyBlock;
     private Polygon pointer;
     private double pointerWidth;
@@ -35,6 +35,7 @@ public class LinearSearch extends Visualisations {
 
     @Override
     protected void initMainArea() {
+        this.setIndex(-1);
         inputArray = inputArray.isEmpty() || !resetFlag ? RandomGenerator.generateRandomNumbers(0,20, 10 ) : inputArray;
         charBlocks = new CharBlock[inputArray.size()];
         key = key == null || !resetFlag ? RandomGenerator.generateRandomNumber(0, 20) : key;

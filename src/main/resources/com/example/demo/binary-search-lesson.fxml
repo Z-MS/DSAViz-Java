@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<Pane id="pane" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchLesson">
+   <children>
+      <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="1366.0">
+         <items>
+            <HBox fillHeight="false" spacing="530.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#goHome" text="Home">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Label text="Binary Search">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#goToVisualisation" text="Go to Visualisation" />
+               </children>
+            </HBox>
+         </items>
+      </ToolBar>
+      <ScrollPane layoutX="220.0" layoutY="69.0" prefHeight="603.0" prefWidth="905.0">
+         <content>
+            <VBox prefHeight="601.0" prefWidth="886.0">
+               <children>
+                  <TextFlow prefHeight="74.0" prefWidth="886.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The binary search algorithm searches an ordered data collection for a specific element. The binary search only works on sorted data collections because it uses the order of the elements to find its target." wrappingWidth="865.3984375">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" top="20.0" />
+                     </padding>
+                  </TextFlow>
+                  <TextFlow prefHeight="39.0" prefWidth="886.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Let's take an example. Suppose we want to find the value, 14, in the array below:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </TextFlow>
+                  <ImageView fitHeight="191.0" fitWidth="336.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/initial.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets right="100.0" />
+                     </VBox.margin>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm first needs to find the middle index of the array based on the start and end indexes. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/initial-with-edge-pointers.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To get the middle index, it adds the start and end indexes, then divides them by 2. In this case, (0 + 9) / 2 = 4.5. The algorithm uses the mathematical floor function to discard the decimal part and take the whole number, so the middle index is 4." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/first-middle.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm then checks if the middle element is equal to the key. 13 is not equal to 14, so the algorithm has to search another part of the array. The algorithm has to decide where to search next, so it checks whether the key is lesser or greater than the middle element. Since 13 is less than 14, the algorithm will search the right half of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/first-go-right.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="In order to search the right half, the " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="start pointer " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="will move to the element after the middle value. The old middle index is not needed anymore, and the algorithm will have to find a new one to continue the search." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/start-moved.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Notice that the blocks before the start pointer have all become grey; this signifies that the algorithm won't search that part of the array anymore." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Continuing the search, the algorithm finds a new middle index using the same method as before. Once again, it compares the middle element with the key:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/second-middle.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since 16 is not equal to 14, the algorithm has to search another part of the array. This time, it will check the left part of the array since the middle element, 16, is greater than the key." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/first-go-left.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The end pointer moves to its new position, and a new middle index is calculated." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/end-moved.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The new middle element is 14, which is equal to the search key. The algorithm has found a match at index 5, and the search ends." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/match-found.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Let's see an example where the algorithm does not find a match in the array. We'll search for the value 6 in the array below:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-initial.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm gets the middle element, and compares it to the key:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-initial- pointers.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since 6 is less than 12, the algorithm will search the left half of the array" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-first-go-left.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The end pointer moves to its new position." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-second.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The new middle element is 7, which is not equal to 6." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-second-middle.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since 6 is less than 7, the algorithm has to search the left half of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-second-go-left.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The end pointer moves to its new position:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-third.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The middle element is 5, which is less than 6. The algorithm will have to search the right part of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-third-middle.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm has already searched that part of the array before, so will it search there again? The answer is" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" no, " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="but one more thing has to happen before the algorithm can stop." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-go-right.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since the key 6, is greater than the middle element 5, the start pointer has to move to the right of the middle element." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/binary-search/no-match-found.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Once the start pointer moves, it passes the end pointer. Since the boundaries have crossed, the algorithm cannot search any longer and returns -1, indicating that no match was found." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="With the examples we've seen, we can summarise the binary search algorithm." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="While the start index is less than the end index:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- It finds the middle element in the array (or subarray) using the start and end indexes." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- It compares the middle element with the search key. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="   - If the middle element is equal to the search key, it returns the index of middle element." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="   - If the search key is greater than the middle element, it searches the part of the array to the left of the middle element, and updates the end index." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="   - If the search key is less than the middle element, it will search the part of the array to the right of the middle element, moving the start index." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- If the start index is greater than the end index, it returns -1, signifying that no match was found" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Complexity" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Best Case: O(1)" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Worst Case: O(log n)" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Next Steps" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="We've come to the end of this lesson. You can click the 'Go to Visualisation' button in the top-right corner to see an animation of the linear search algorithm along with pseudocode." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</Pane>

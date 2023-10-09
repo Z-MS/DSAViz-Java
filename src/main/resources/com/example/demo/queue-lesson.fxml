@@ -14,26 +14,25 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<Pane id="pane" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchLesson">
+<Pane id="pane" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.QueueLesson">
    <children>
       <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="1366.0">
-        <items>
+         <items>
             <HBox fillHeight="false" spacing="530.0">
                <children>
-                <Button mnemonicParsing="false" onAction="#goHome" text="Home">
+                  <Button mnemonicParsing="false" onAction="#goHome" text="Home">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Label text="Linear Search">
+                  <Label text="Queues Lesson">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" onAction="#goToVisualisation" text="Go to Visualisation" />
                </children>
             </HBox>
-        </items>
+         </items>
       </ToolBar>
       <ScrollPane layoutX="220.0" layoutY="69.0" prefHeight="603.0" prefWidth="905.0">
          <content>
@@ -41,7 +40,7 @@
                <children>
                   <TextFlow prefHeight="74.0" prefWidth="886.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Linear (or sequential) search algorithm goes through the elements of a data collection, such as an array or list, checking its elements one by one to find a given input (search key). It can be used to search both sorted and unsorted data collections." wrappingWidth="865.3984375">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Queues are data structures that are used to hold and process data in a FIFO (first-in first-out) fashion. They work similarly to queues in real life, but with constraints. " wrappingWidth="865.3984375">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -54,21 +53,9 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </TextFlow>
-                  <TextFlow prefHeight="39.0" prefWidth="886.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm is easier understood with an example. Let's say we want to search this array for the number 18:" wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </TextFlow>
                   <ImageView fitHeight="191.0" fitWidth="336.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
                      <image>
-                        <Image url="@../../../img/linear-search/initial-list-no-pointer.png" />
+                        <Image url="@../../../img/queues/queue.png" />
                      </image>
                      <VBox.margin>
                         <Insets right="100.0" />
@@ -79,90 +66,104 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm starts from the first element, 8, and compares it with the key." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Queues have the following properties:- " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- The element at the beginning of the queue is called the head or front." wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Text>
                      </children>
                   </TextFlow>
-                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- The element at the end of the queue is called the tail or back." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- When an element is added to the queue, it becomes the tail of the queue (the last element). The process of adding an element to a queue is called enqueuing." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <ImageView fitHeight="204.0" fitWidth="330.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
                      <image>
-                        <Image url="@../../../img/linear-search/initial-list.png" />
+                        <Image url="@../../../img/queues/enqueue.png" />
                      </image>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
                   </ImageView>
                   <TextFlow prefHeight="40.0" prefWidth="886.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since 8 is not equal to 18, it moves to the next element in the array." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- An element can only be removed from the queue when if it is the head. This process is known as dequeueing." wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Text>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
                   </TextFlow>
-                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                  <ImageView fitHeight="204.0" fitWidth="330.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
                      <image>
-                        <Image url="@../../../img/linear-search/checking-next-element.png" />
+                        <Image url="@../../../img/queues/dequeue.png" />
                      </image>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
                   </ImageView>
                   <TextFlow prefHeight="40.0" prefWidth="886.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm compares 20 to 18. Since they're not equal, it moves to the next element once again." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The manner in which enqueuing and dequeuing happens allows queues to process elements in the FIFO order." wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Text>
                      </children>
                   </TextFlow>
-                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
-                     <image>
-                        <Image url="@../../../img/linear-search/match-found.png" />
-                     </image>
-                  </ImageView>
                   <TextFlow prefHeight="40.0" prefWidth="886.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm finds a match after comparing the current element and the key. It returns the value 2, which is the index of the matched element." wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="What happens when the algorithm doesn't find the element it's searching for in an array?" wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <ImageView fitHeight="134.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
-                     <image>
-                        <Image url="@../../../img/linear-search/no-match.png" />
-                     </image>
-                  </ImageView>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="In the image above, the algorithm searched the array for the value 15. It checked all the elements in the array, but none of them were equal to 15. Since the algorithm reached the end of the array without finding a match, it returned -1, signifiying that the search was not successful." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The queues described in this lesson are called simple queues or linear queues. Other types of queues include circular queue, priority queue and double ended queue." wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -177,7 +178,31 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="We can now summarise the linear search algorithm. Starting from the first element of the array:                   " wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Complexity of Queue Operations" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Enqueue" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Best case: O(1)" wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -189,26 +214,14 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- If the current element is equal to the key, it returns the index of that element, else it moves on to the next element in the array. " wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- If no element in the array is equal to the key, it returns -1." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Worst case: O(1)" wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Text>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </TextFlow>
                   <TextFlow prefHeight="40.0" prefWidth="886.0">
@@ -216,7 +229,19 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The Linear search algorithm is simple and effective, but not very efficient. There are two common scenarios where a linear search is very inefficient:" wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dequeue" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Best case: O(1)" wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -228,26 +253,14 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1) Searching a very large list: Since the algorithm goes through a list one element at a time, it would take a very long time to search a large list or array. In some of these cases it would be better to first sort the list, and then use a more efficient searching algorithm." wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2) Searching an ordered list: If the list it's searching is ordered, it does unnecessary checks since the ordering of the list gives a clue of the search key's position in the list." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Worst case: O(1)" wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Text>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </TextFlow>
                   <TextFlow prefHeight="40.0" prefWidth="886.0">
@@ -255,58 +268,7 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="From the above, we can see that the linear search algorithm is more efficient in cases where:" wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1) The size of the list being searched is small" wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2) The list being searched is unsorted and is not too large." wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="3) The search key is the first element in the list or near the start of the list." wrappingWidth="405.2395782470703">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                  </TextFlow>
-                  <TextFlow prefHeight="40.0" prefWidth="886.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Complexity" wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" wrappingWidth="405.2395782470703">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -345,9 +307,9 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Next Steps" wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Applications of Queues" wrappingWidth="405.2395782470703">
                            <font>
-                              <Font name="System Bold" size="16.0" />
+                              <Font name="System Bold" size="18.0" />
                            </font>
                         </Text>
                      </children>
@@ -357,7 +319,43 @@
                         <Insets left="10.0" />
                      </padding>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="We've come to the end of this lesson. You can click the 'Go to Visualisation' button in the top-right corner to see an animation of the linear search algorithm along with pseudocode." wrappingWidth="405.2395782470703">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- Operating systems use queues for executing processes and jobs in a FIFO order." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- Printers use queues for processing print jobs in the order they were received" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- Web servers use queues for processing network requests." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="- The Breadth-first search algorithm uses queues to process nodes." wrappingWidth="405.2395782470703">
                            <font>
                               <Font size="16.0" />
                            </font>

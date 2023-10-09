@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<Pane id="pane" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LinearSearchLesson">
+   <children>
+      <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="1366.0">
+         <items>
+            <HBox fillHeight="false" spacing="530.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#goHome" text="Home">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Label text="Selection Sort">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#goToVisualisation" text="Go to Visualisation" />
+               </children>
+            </HBox>
+         </items>
+      </ToolBar>
+      <ScrollPane layoutX="220.0" layoutY="69.0" prefHeight="603.0" prefWidth="905.0">
+         <content>
+            <VBox prefHeight="601.0" prefWidth="886.0">
+               <children>
+                  <TextFlow prefHeight="74.0" prefWidth="886.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The selection sort algorithm sorts a collection of data in ascending order, from smallest to highest. It can also be used to sort in descending order, depending on what order is specified during implementation. " wrappingWidth="865.3984375">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" top="20.0" />
+                     </padding>
+                  </TextFlow>
+                  <TextFlow prefHeight="39.0" prefWidth="886.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm is better understood with an example. Assuming we want to sort the list below:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </TextFlow>
+                  <ImageView fitHeight="191.0" fitWidth="336.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/initial-array.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets right="100.0" />
+                     </VBox.margin>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="We introduce two pointers here:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1) The &quot;min&quot; pointer, which points to the current minimum element in the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2) The comparison pointer (coloured red) which is used to check if other elements in the array are smaller than the current minimum element." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm starts with the min pointer at the first element of the unsorted array, and the comparison pointer at the element immediately after it. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/initial-array-pointers.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Since 20 isn't less than 14, the comparison pointer moves on to the next element to check for smaller values. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/check-second.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="10 is less than 14, so the min pointer moves to 10, making 10 the current minimum element in the array. The comparison pointer then moves to the next element." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/check-third.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="17 isn't less than 10, so the comparison pointer moves to the next element. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/check-fourth.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="15 is not less than 10, and since it is the last element in the array, the first pass (iteration) ends." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/inner-pointer-out.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="At this point, the element under the min pointer swaps position with the first element of the unsorted array. In other words, 10 swaps places with 14 and takes its correct position as the smallest element in the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/first-sorted.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm starts a new pass to sort the remaining elements. The min pointer moves to the first element in the unsorted part of the array, and the comparison pointer moves to the second element in the unsorted part of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/second-iteration.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Doing the same comparisons as before, we can fast forward to the end of the second pass and see that the min pointer is on 14." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/end-of-second.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="14 swaps places with 20, which is the first element in the unsorted part of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/second-sorted.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The algorithm then enters the third pass:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/third-iteration.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="At the end of the third pass, we can see that 15 is the smallest element." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/end-of-third.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="15 swaps places with 20 and joins the sorted part of the array" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/third-sorted.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The fourth pass begins with only two numbers left to sort. Since 17 is less than 20, and 20 is the last element in the array, no swapping occurs." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/fourth-iteration.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The fourth pass ends and the array is fully sorted. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <ImageView fitHeight="157.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true" translateX="250.0">
+                     <image>
+                        <Image url="@../../../img/selection-sort/end-of-fourth.png" />
+                     </image>
+                  </ImageView>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Having gone through an example, we can summarise the selection sort algorithm:" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1. Look for the smallest element in the unsorted part of the array. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2. Swap the smallest element with the first element of the unsorted part of the array." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="3. Proceed to sort the remaining parts of the array. " wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="4. Repeat steps 1-3 until the array is sorted." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Complexity" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Best Case: O(n²)" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Worst Case: O(n²)" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Next Steps" wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+                  <TextFlow prefHeight="40.0" prefWidth="886.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="We've come to the end of this lesson. You can click the 'Go to Visualisation' button in the top-right corner to see an animation of the linear search algorithm along with pseudocode." wrappingWidth="405.2395782470703">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</Pane>
