@@ -3,7 +3,7 @@ DSAViz is an algorithms visualiser built with JavaFX, FXML and Scene Builder for
 
 ![MainMenuScreenshot](https://github.com/user-attachments/assets/aa8c654e-5ab3-4e61-a7c5-6ad729997d76)
 
-The app contains two sections, algorithms and data structures:
+The app contains two sections: algorithms and data structures.
 - Algorithms
   - Linear search
   - Binary search
